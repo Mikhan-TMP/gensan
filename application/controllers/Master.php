@@ -1889,7 +1889,6 @@ public function markAllAsRead() {
       redirect('report/attend_seat');
     }
     else{
-        //IF THE RESERVATION IS AHEAD OF TIME, THEN REMOVE THE SLOTS
         //check the current date
         $current_date = date('Y-m-d');
         //get the current time.
