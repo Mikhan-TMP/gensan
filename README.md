@@ -1,2 +1,2 @@
-# BULSU-Web
-this is bulsu web s
+# Gensan Web Server
+this is Gensan
