@@ -82,6 +82,7 @@
 
 
     <?php if ($book != null) : ?>
+      
       <!-- Export exel and PDF -->
 
       <div class="card shadow mb-4">
@@ -114,75 +115,143 @@
                 <tr>
                   <tr>
                     <th >#</th>
-                    <th class="header">Date</th>
+                    <th class="header">Transaction ID</th>
                     <th class="header">Floor</th> 
                     <th class="header">Room Name</th>                                         
                     <th class="header">Reserved Hour</th> 
-                    <th class="header">Used Hour </th> 
+                    <th class="header">Used Time</th> 
                     <th class="header">Usage(%)</th>
                   </tr>
               </thead>
               
-              <tbody style="color: #272727;">
+              <tbody style = "color: #272727;">
                 <?php
                 $i = 1;
-                foreach ($book as $atd) :
-                ?>
-                <?php 
-                  $area_info = $this->db->get_where('area', array('floor' => $atd['floor'], 'room' => $atd['room']))->row_array();
-                  $times = []; 
 
-                  // Parse the opening and closing times
-                  $open_time = strtotime($area_info['opentime']);
-                  $close_time = strtotime($area_info['closetime']);
+                foreach ($book as $transactions) {
+                  $area_room = $transactions['room'];
+                  $area_floor = $transactions['floor'];
 
-                  // Generate the time slots
-                  $counter = 0; // Initialize counter
-                  for ($time = $open_time; $time <= $close_time; $time = strtotime('+1 hour', $time)) {
-                    $times[$counter] = date('H:i', $time);
-                    $counter++;
-                  }
-
+                  $area_info = $this->db->get_where('area', ['room' => $area_room, 'floor' => $area_floor])->row_array();
+                  $open_time = $area_info['opentime'];
+                  $close_time = $area_info['closetime'];
                   ?>
                   <tr>
-                    <td><?= $i++; ?></td>                    
-                    <td><?= $atd['date']; ?></td>
-                    <td><?= $atd['floor']; ?></td>
-                    <td><?= $atd['room']; ?></td> 
-                    <!-- <td><?= $atd['seat']; ?></td> -->
-                    <td><?php
-                          $start_time_index = $atd['start_time'];
-                          if (isset($times[$start_time_index])) {
-                              $start_time_format = $times[$start_time_index];  
-                              // echo date('g:i A', strtotime($start_time_format));
-                          } else {
-                              // echo "Invalid start time"; 
+                    <td colspan="1"><?php echo $i++;?></td>
+                    <td colspan="1"><?php echo $transactions['id'];?></td>
+                    <td colspan="1"><?php echo $transactions['floor'];?></td>
+                    <td colspan="1"><?php echo $transactions['room'];?></td>
+                    <td colspan="1"><?php
+                      //Reserved Hour:
+                      //get the start time index and end time index
+                      $end_time_index = $transactions['end_time'];
+                      $start_time_index = $transactions['start_time'];
+                      //get the equivalent of time of the time index
+                      
+                      // Convert $open_time and $close_time to timestamps
+                      $open_time_timestamp = strtotime($open_time);
+                      $close_time_timestamp = strtotime($close_time);
+
+                      if ($open_time_timestamp !== false && $close_time_timestamp !== false) {
+                          // Format the times
+                          $formatted_open_time = date('H:i:s', $open_time_timestamp);
+                          $formatted_close_time = date('H:i:s', $close_time_timestamp);
+                          // Generate the time index
+                          $timesIndex = array();
+                          $counter = 0;
+                          // Loop to generate time slots
+                          for ($time = $open_time_timestamp; $time <= $close_time_timestamp; $time = strtotime('+1 hour', $time)) {
+                              $timesIndex[$counter] = date('H:i', $time); // Convert timestamp to 'H:i' format
+                              $counter++;
                           }
-                    
-                          $end_time_index = $atd['end_time'];
-                                if (isset($times[$end_time_index])) {
-                                    $end_time_format = $times[$end_time_index];  
-                                    // echo date('g:i A', strtotime($end_time_format));
-                                } else {
-                                    // echo "Invalid end time"; 
-                                }
-                          //get the duration from start_time to end_time formats
-                          $start_time = strtotime($start_time_format);
-                          $end_time = strtotime($end_time_format);
-                          $duration = abs($end_time - $start_time) / 3600;
-                          $duration = round($duration, 2);
-                          echo $duration ." hour/s";
-                          ?></td>
-                    <td><?php
-                          $used_hours = rand(1, $duration);
-                          echo $used_hours . " hour/s";
-                          ?></td>
-                    <td>                    <?php
-                      $percentage = ($used_hours / $duration) * 100;
-                      echo number_format($percentage, 2) . "%";
+                      } else {
+                          echo "Invalid open or close time.";
+                      }
+
+                      $start_time = $timesIndex[$start_time_index];
+                      $end_time = $timesIndex[$end_time_index];
+                      $start_time_timestamp = strtotime($start_time);
+                      $end_time_timestamp = strtotime($end_time);
+                      $reserved_hour = ceil(abs($end_time_timestamp - $start_time_timestamp) / 3600);
+                      // echo $start_time . " - " . $end_time;
+                      // echo "<br>";
+                      echo $reserved_hour . " hours";
                     ?></td>
-                  </tr>
-                <?php endforeach; ?>
+                    <td colspan="1"><?php 
+                        //Used Hour:
+                        //get the out_time of the booking
+                        $out_time = $transactions['out_time'];
+                        $in_time = $transactions['in_time'];
+                        // echo $out_time;
+                        // echo "<br>";
+                        // echo $in_time;
+                        // echo "<br>";
+                        if ($out_time!= null) {
+                            $out_time_timestamp = strtotime($out_time);
+                            $in_time_timestamp = strtotime($in_time);
+                            $diff = $out_time_timestamp - $in_time_timestamp;
+                            $hours = floor($diff / 3600);
+                            $minutes = floor(($diff % 3600) / 60);
+                            $seconds = $diff % 60;
+                            echo sprintf("%2dhrs:%2dmins", $hours, $minutes, $seconds);
+                        } else {
+                            echo "On Going";
+                        }
+                    ?></td>
+                    <td colspan="1"><?php 
+                      //usage
+                      if ($out_time!= null || $in_time!= null) {
+                        if ($transactions['in_status'] == "cancelled" || $transactions['out_status'] == "cancelled") {
+                          echo "Cancelled";
+                        }
+                        else if ($transactions['in_status'] == "occupied" && $transactions['out_status'] == "exit") {
+                          $out_time_timestamp = strtotime($out_time);
+                          $in_time_timestamp = strtotime($in_time);
+                          $diff = $out_time_timestamp - $in_time_timestamp;
+                          
+                          // Calculate total time used in hours (including fractional hours for minutes and seconds)
+                          $total_used_hours = $diff / 3600; // Convert total seconds to hours
+                          
+                          // Calculate usage percentage
+                          $usage = round(($total_used_hours * 100) / $reserved_hour, 2);
+                          
+                          // Output the usage percentage
+                          echo $usage . "%";
+                        }
+                        else if ($transactions['in_status'] == "occupied" && $transactions['out_status'] == "early-exit") {
+                          $out_time_timestamp = strtotime($out_time);
+                          $in_time_timestamp = strtotime($in_time);
+                          $diff = $out_time_timestamp - $in_time_timestamp;
+                          
+                          // Calculate total time used in hours (including fractional hours for minutes and seconds)
+                          $total_used_hours = $diff / 3600; // Convert total seconds to hours
+                          
+                          // Calculate usage percentage
+                          $usage = round(($total_used_hours * 100) / $reserved_hour, 2);
+                          
+                          // Output the usage percentage
+                          echo $usage . "%";
+                        }
+                        else if ($transactiosn['in_status'] == "occupied" && $transactions['out_status'] == "late-exit") {
+                          $out_time_timestamp = strtotime($out_time);
+                          $in_time_timestamp = strtotime($in_time);
+                          $diff = $out_time_timestamp - $in_time_timestamp;
+                          
+                          // Calculate total time used in hours (including fractional hours for minutes and seconds)
+                          $total_used_hours = $diff / 3600; // Convert total seconds to hours
+                          
+                          // Calculate usage percentage
+                          $usage = round(($total_used_hours * 100) / $reserved_hour, 2);
+                          
+                          // Output the usage percentage
+                          echo $usage . "%";
+                        }
+                      }
+                    ?></td>
+                  </tr> 
+                  <?php
+                }
+                ?>
               </tbody>
             </table>
           </div>

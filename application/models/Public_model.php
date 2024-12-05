@@ -520,6 +520,8 @@ class Public_model extends CI_Model
                 booking.date,
                 booking.start_time,
                 booking.end_time,
+                booking.in_status,
+                booking.out_status,
                 booking.in_time,
                 booking.out_time  
       FROM  booking
@@ -542,6 +544,8 @@ class Public_model extends CI_Model
                 booking.slot_id, 
                 booking.date,
                 booking.start_time,
+                booking.in_status,
+                booking.out_status,
                 booking.end_time,
                 booking.in_time,
                 booking.out_time  
@@ -566,6 +570,8 @@ class Public_model extends CI_Model
                 booking.date,
                 booking.start_time,
                 booking.end_time,
+                booking.in_status,
+                booking.out_status,
                 booking.in_time,
                 booking.out_time  
       FROM  booking
@@ -639,5 +645,24 @@ class Public_model extends CI_Model
     $query = "SELECT DISTINCT `kiosk` FROM `attend` WHERE 1 ";
     return $this->db->query($query)->result_array();    
   }
-  
+
+
+  public function getTransaction($start, $end, $room){
+    $query = $this->db->select('booking.id, booking.room, booking.floor, booking.slot_id, booking.date, booking.in_time, booking.out_time, booking.start_time, booking.end_time, booking.code, booking.in_status, booking.out_status')
+                  ->from('booking');
+    if ($room == null || $room == "" && $start == null || $start == "" && $end == null || $end == "") {
+      return $query->get()->result_array();
+    }
+    else if ($room != null && $start == null && $end == null) {
+      $this->db->where('booking.room', $room);
+      return $query->get()->result_array();
+    }
+    else if ($room !=null && $start != null && $end != null) {
+      $this->db->where('booking.room', $room);
+      $this->db->where('booking.date >=', $start);
+      $this->db->where('booking.date <=', $end);
+      return $query->get()->result_array();
+    }
+ 
+  }
 }

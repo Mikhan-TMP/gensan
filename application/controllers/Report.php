@@ -232,6 +232,25 @@ class Report extends CI_Controller
       }
     }
   }
+  private function PrintTransaction($start, $end, $room) 
+  {
+    if ($start == '' || $end == '') {
+      if ($room == '')
+        return $this->Public_model->getTransaction($start, $end, $room);
+      else 
+        return $this->Public_model->getTransaction($start, $end, $room);
+  
+    } 
+    else {
+      if($room =='')
+        return $this->Public_model->getTransaction($start, $end, $room);
+ 
+      else {
+        return $this->Public_model->getTransaction($start, $end, $room);
+   
+      }
+    }
+  }
   private function BookRoomlists($start, $end, $room) 
   {
     if ($start == '' || $end == '') {
@@ -258,9 +277,12 @@ class Report extends CI_Controller
     $d['start'] = $this->input->get('start');    
     $d['end'] = $this->input->get('end');    
     $d['room'] = $this->input->get('room');   
-
     $type = $this->input->get('submit');
+
+    // $d['transactions'] = $this->Public_model->getTransaction($d['start'], $d['end'],$d['room']);
     $d['book'] = $this->Booklists($d['start'], $d['end'],$d['room']);
+    // $d['transactions'] = $this->printTransaction($d['start'], $d['end'],$d['room']);
+
     if($type =='Print'){
       $this->load->view('report/print_transaction', $d);
     }
@@ -389,11 +411,23 @@ class Report extends CI_Controller
    */
 
   }
-  
-  public function transaction_report(){
-    $d['title'] = 'Transaction Report';
-
-    
+  public function getTransaction($start, $end, $room){
+    $query = $this->db->select('booking.id, booking.room, booking.floor, booking.slot_id, booking.date, booking.in_time, booking.out_time, booking.start_time, booking.end_time, booking.code, booking.in_status, booking.out_status')
+                  ->from('booking');
+    if ($room == null || $room == "" && $start == null || $start == "" && $end == null || $end == "") {
+      return $query->get()->result_array();
+    }
+    else if ($room != null && $start == null && $end == null) {
+      $this->db->where('booking.room', $room);
+      return $query->get()->result_array();
+    }
+    else if ($room !=null && $start != null && $end != null) {
+      $this->db->where('booking.room', $room);
+      $this->db->where('booking.date >=', $start);
+      $this->db->where('booking.date <=', $end);
+      return $query->get()->result_array();
+    }
+ 
   }
   
 
