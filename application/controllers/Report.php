@@ -30,6 +30,7 @@ class Report extends CI_Controller
     
     $type = $this->input->get('submit');
     $d['attendance'] = $this->_attendanceDetails($d['start'], $d['end'], $d['dept_code']);
+    
 
     // $d['attendance'] = $this->Public_model->get_attend_all($dept);  
     //  $this->_attendanceDetails($d['start'], $d['end'], $d['dept_code']);
@@ -389,6 +390,11 @@ class Report extends CI_Controller
 
   }
   
+  public function transaction_report(){
+    $d['title'] = 'Transaction Report';
+
+    
+  }
   
 
 }

@@ -200,7 +200,21 @@
                       $counter++;
                     }
                   ?>
-                  <tr>
+                  <tr 
+                    <?php 
+                    if ($atd['in_status'] == "occupied" && $atd['out_status'] == "exit") {
+                        echo 'style="background-color: #cfffd1;"'; 
+                    } else if ($atd['in_status'] == "occupied" && $atd['out_status'] == "early-exit") {
+                        echo 'style="background-color: #f9ecec;"'; 
+                    } else if ($atd['in_status'] == "occupied" && $atd['out_status'] == "late-exit") {
+                        echo 'style="background-color: #fff4e6;"'; 
+                    } else if ($atd['in_status'] == "occupied" && $atd['out_status'] == "f-timeout") {
+                        echo 'style="background-color: #f3f3ff;"'; 
+                    } else if ($atd['in_status'] == "cancelled" || $atd['out_status'] == "cancelled") {
+                        echo 'style="background-color: #580202; color: white;"'; 
+                    }
+                    ?>
+                    >
                   <td><?= $atd['id']; ?></td>                    
                     <td><?= $atd['date']; ?></td>
                     <td><?= $atd['floor']; ?></td>
@@ -296,7 +310,23 @@
                           class="btn w-100" 
                           style="background: linear-gradient(180deg, #BE110E, #630908); font-size: 12px; color: white; border: none; opacity: 0.6; cursor: not-allowed;" 
                           disabled>
-                          Completed
+                          <?php 
+                            if($atd['in_status'] == "occupied" && $atd['out_status'] == "exit"){
+                              echo "Completed";
+                            }
+                            else if ($atd['in_status'] == "occupied" && $atd['out_status'] == "early-exit"){
+                              echo "Early Exit";
+                            }
+                            else if ($atd['in_status'] == "occupied" && $atd['out_status'] == "late-exit"){
+                              echo "Late Exit";
+                            }
+                            else if ($atd['in_status'] == "occupied" && $atd['out_status'] == "f-timeout"){
+                              echo "Timed out";
+                            }
+                            else if ($atd['in_status'] == "cancelled" || $atd['out_status'] == "cancelled"){
+                              echo "Cancelled";
+                            }
+                          ?>
                         </button>
                         <?php } ?> 
                     </td>

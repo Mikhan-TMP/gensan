@@ -492,6 +492,8 @@ class Public_model extends CI_Model
                 booking.room, 
                 booking.slot_id, 
                 booking.date,
+                booking.in_status,
+                booking.out_status,
                 booking.start_time,
                 booking.end_time,
                 booking.in_time,
