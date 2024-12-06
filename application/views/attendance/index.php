@@ -150,9 +150,9 @@
     });
 </script>
 
- <!-- THIS WILL OPEN THE MODAL -->
+<!-- THIS WILL OPEN THE MODAL -->
 <script>
-    document.getElementById('exportCsv').addEventListener('click', function () {
+document.getElementById('exportCsv').addEventListener('click', function () {
     Swal.fire({
         title: 'Export Attendance Data',
         html: `
@@ -168,8 +168,8 @@
                 <div class="mb-3 d-flex" style="justify-content: right;">
                     <div class="btn-group" style=" gap: 10px;">
                         <button type="button" class="p-2" style=" border: none; font-weight: 500; font-size: small; border-radius: 5px; background: linear-gradient(180deg, #BE110E, #630908); color: white; min-width: 100px" id="todayButton">Today</button>
-                        <button type="button" class="p-2" id="yesterdayButton"  style="border: none; font-weight: 500; font-size: small; border-radius: 5px; background: linear-gradient(180deg, #BE110E, #630908); color: white; min-width: 100px ">Yesterday</button>
-                        <select class="form-select" id="range" name="range"  style="border: none; font-weight: 500; font-size: small; border-radius: 5px; background: linear-gradient(180deg, #FFD602, #FAB703, #D6890E);  color: black; ">
+                        <button type="button" class="p-2" id="yesterdayButton" style="border: none; font-weight: 500; font-size: small; border-radius: 5px; background: linear-gradient(180deg, #BE110E, #630908); color: white; min-width: 100px">Yesterday</button>
+                        <select class="form-select" id="range" name="range" style="border: none; font-weight: 500; font-size: small; border-radius: 5px; background: linear-gradient(180deg, #FFD602, #FAB703, #D6890E); color: black;">
                             <option value="">Select Range</option>
                             <option value="7">Last 1 week</option>
                             <option value="14">Last 2 weeks</option>
@@ -184,29 +184,26 @@
                     </div>
                 </div>
 
+                <?php
+                $collegeCourses = [];
+                foreach ($attendance as $entry) {
+                    $collegeCourses[$entry['college']][] = $entry['course'];
+                }
+                ?>
                 <div class="mb-3 text-left" style="color: #272727; font-weight: 500; font-size: small;">
-                    <label for="college" class="form-label" >Select College</label>
+                    <label for="college" class="form-label">Select College</label>
                     <select id="college" name="college" class="form-control">
                         <option value="All">All Colleges</option>
-                        <?php
-                        $colleges = array_unique(array_column($attendance, 'college'));
-                        foreach ($colleges as $college) :
-                        ?>
-                            <option value="<?= $college ?>"><?= $college ?></option>
+                        <?php foreach (array_keys($collegeCourses) as $college): ?>
+                            <option value="<?= htmlspecialchars($college) ?>"><?= htmlspecialchars($college) ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
 
                 <div class="mb-3 text-left" style="color: #272727; font-weight: 500; font-size: small;">
                     <label for="course" class="form-label">Select Course</label>
-                    <select id="course" name="course" class="form-control">
+                    <select id="course" name="course" class="form-control" disabled>
                         <option value="All">All Courses</option>
-                        <?php
-                        $courses = array_unique(array_column($attendance, 'course'));
-                        foreach ($courses as $course) :
-                        ?>
-                            <option value="<?= $course ?>"><?= $course ?></option>
-                        <?php endforeach; ?>
                     </select>
                 </div>
             </form>
@@ -216,6 +213,31 @@
         confirmButtonText: 'Export',
         showDenyButton: true,
         denyButtonText: 'Count Only',
+        didOpen: () => {
+            const collegeCourses = <?= json_encode($collegeCourses) ?>;
+
+            const collegeSelect = document.getElementById('college');
+            const courseSelect = document.getElementById('course');
+
+            collegeSelect.addEventListener('change', () => {
+                const selectedCollege = collegeSelect.value;
+
+                // Reset and disable course dropdown
+                courseSelect.innerHTML = '<option value="All">All Courses</option>';
+                courseSelect.disabled = (selectedCollege === "All");
+
+                if (selectedCollege !== "All" && collegeCourses[selectedCollege]) {
+                    // Populate unique courses for the selected college
+                    const uniqueCourses = [...new Set(collegeCourses[selectedCollege])];
+                    uniqueCourses.forEach(course => {
+                        const option = document.createElement('option');
+                        option.value = course;
+                        option.textContent = course;
+                        courseSelect.appendChild(option);
+                    });
+                }
+            });
+        },
         preConfirm: () => {
             const startDate = document.getElementById('startDate').value;
             const endDate = document.getElementById('endDate').value;
@@ -245,21 +267,16 @@
     }).then((result) => {
         const { startDate, endDate, course, college } = result.value;
 
-        // If "Count Only" was clicked
         if (result.isDenied) {
             const url = `<?= base_url('master/excel_export?startDate=') ?>${startDate}&endDate=${endDate}&course=${course}&college=${college}&countOnly=true`;
             window.location.href = url;
-        }
-        // If "Export" was clicked
-        else if (result.isConfirmed) {
+        } else if (result.isConfirmed) {
             const url = `<?= base_url('master/excel_export?startDate=') ?>${startDate}&endDate=${endDate}&course=${course}&college=${college}`;
             window.location.href = url;
         }
     });
 });
-
 </script>
-
 <!-- FOR TODAY YESTERDAY  -->
 <script>
     document.addEventListener('click', function (event) {

@@ -152,6 +152,45 @@ public function area()
         'min_slot' => $this->input->post('min_slot'),
         'max_slot' => $this->input->post('max_slot')
       ];
+        // Initialize the needed variables.
+        $seat_number = $this->input->post('d_seat') + 1;
+        $area_floor = $this->input->post('d_floor');
+        $area_name = $this->input->post('d_name');
+        $old_seat_number = $d['d_old']['slotnumber'];
+        date_default_timezone_set('Asia/Manila');
+        $current_date = date('Y-m-d');
+
+        // If old seat number is greater than the new seat number, delete the records
+        if ($old_seat_number > $seat_number) {
+            // Loop starting from seat number and above
+            for ($i = $seat_number; $i <= $old_seat_number; $i++) {
+                $this->db->where('date >=', $current_date)
+                        ->where('Slot', $i)
+                        ->where('floor', $area_floor)
+                        ->where('Room', $area_name)
+                        ->delete('slot');
+            }
+        } 
+        // If old seat number is smaller than the new seat number, add records
+        //ERROR NOW. FIX SA MONDAY IT ADDS PERO WALA RAW DATE lmao.
+        else if ($old_seat_number < $seat_number) {
+            // Loop starting from old seat number + 1 to new seat number
+            for ($i = $old_seat_number + 1; $i < $seat_number; $i++) {
+                // You can customize the status and uniqueid based on your needs
+                $data = [
+                    'date' => $current_date,
+                    'Floor' => $area_floor,
+                    'Room' => $area_name,
+                    'Slot' => $i,
+                    'status' => '[0,0,0,0,0,0,0,0,0,0]', // Example status
+                    'uniqueid' => ''
+                ];
+                $this->db->insert('slot', $data);
+            }
+        }
+
+
+
       $this->db->update('area', $data, ['id' => $d_id]);
       $rows = $this->db->affected_rows();
       if ($rows > 0) {
