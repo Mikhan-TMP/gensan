@@ -193,7 +193,7 @@ class Admin extends CI_Controller
   }
   function do_upload_L(){ //IMAGE UPLOAD
     $config['upload_path']          = './assets/images_L';
-    $config['allowed_types']        = 'gif|jpg|png|jpeg|mp4';
+    $config['allowed_types']        = 'gif|jpg|png|jpeg|webp';
     $config['max_size']             = 204800;
     $config['max_width']            = 1920;
     $config['max_height']           = 1080;
@@ -202,55 +202,64 @@ class Admin extends CI_Controller
 
     if ( ! $this->upload->do_upload('customFile'))
     {
-            $error = array('error' => $this->upload->display_errors());
-            // iterate error to display errors
-            foreach ($error as $key => $value) {
-                $this->session->set_flashdata('cms_fail', $value);
-            }
-            redirect('/admin/cms');
-            // print_r($error); die();
-            // $this->load->view('upload_form', $error);
-            // $this->session->set_flashdata('cms_fail', $error);
-            // redirect('/admin/cms');
-            // print_r($error); die();
-            // $this->load->view('upload_form', $error);
+      $error = array('error' => $this->upload->display_errors());
+      // iterate error to display errors
+      foreach ($error as $key => $value) {
+          $this->session->set_flashdata('cms_fail', $value);
+      }
+      redirect('/admin/cms');
     }
     else
     {
-            $data = array('upload_data' => $this->upload->data());
-            $this->session->set_flashdata('cms_success', 'Image Uploaded');
-            redirect('/admin/cms');
+      // Check the aspect ratio
+      $data = $this->upload->data();
+      $width = $data['image_width'];
+      $height = $data['image_height'];
+       // Calculate the aspect ratio
+       if (round($width / $height, 2) != round(16 / 9, 2)) {
+        unlink($data['full_path']); // Delete the file if it's not 16:9
+        $error = array('error' => 'The uploaded image must have a 16:9 aspect ratio.');
+        $this->session->set_flashdata('cms_fail', 'The uploaded image must have a 16:9 aspect ratio.');
+        redirect('/admin/cms');
+      } else {
+          // Success
+          $data = array('upload_data' => $this->upload->data());
+          $this->session->set_flashdata('cms_scs', 'Image Uploaded');
+          redirect('/admin/cms');
+      }
     }
 }
 
 function do_upload_S(){  // small image 
   $config['upload_path']          = './assets/images_S';
-  $config['allowed_types']        = 'gif|jpg|png|jpeg|mp4';
+  $config['allowed_types']        = 'gif|jpg|png|jpeg|webp';
   $config['max_size']             = 204800;
-  $config['max_width']            = 1024;
-  $config['max_height']           = 768;
+  $config['max_width']            = 1920;
+  $config['max_height']           = 1080;
 
   $this->load->library('upload', $config);
+  if (!$this->upload->do_upload('customFile')) {
+      $error = $this->upload->display_errors();
+      
+      // Set flashdata for errors
+      $this->session->set_flashdata('cms_fail', $error);
+      redirect('/admin/cms');
+  } else {
+      // File upload successful, check the aspect ratio
+      $data = $this->upload->data();
+      $width = $data['image_width'];
+      $height = $data['image_height'];
 
-  if ( ! $this->upload->do_upload('customFile'))
-  {
-          $error = array('error' => $this->upload->display_errors());
-            // iterate error to display errors
-            foreach ($error as $key => $value) {
-              $this->session->set_flashdata('cms_fail', $value);
-          }
+      // Calculate and validate aspect ratio
+      if (round($width / $height, 2) != round(16 / 9, 2)) {
+          unlink($data['full_path']); // Delete file if not 16:9
+          $this->session->set_flashdata('cms_fail', 'The uploaded image must have a 16:9 aspect ratio.');
           redirect('/admin/cms');
-
-          // $this->session->set_flashdata('cms_fail', 'There is a problem uploading your file.');
-          // redirect('/admin/cms');
-          // print_r($error); die();
-          // $this->load->view('upload_form', $error);
-  }
-  else
-  {
-          $data = array('upload_data' => $this->upload->data());
-          $this->session->set_flashdata('cms_success', 'Image Uploaded');
+      } else {
+          // Success - file is valid and has the correct aspect ratio
+          $this->session->set_flashdata('cms_scs', 'Image Uploaded Successfully');
           redirect('/admin/cms');
+      }
   }
 }
 
@@ -271,13 +280,11 @@ function vid_upload(){ //VIDEO UPLOAD
                 $this->session->set_flashdata('cms_fail', $value);
             }
             redirect('/admin/cms');
-            // $this->session->set_flashdata('cms_fail', 'There is a problem uploading your video.');
-            // redirect('/admin/cms');
     }
     else
     {       
             $data = array('upload_data' => $this->upload->data());
-            $this->session->set_flashdata('cms_success', 'Video Uploaded Successfully.');
+            $this->session->set_flashdata('cms_scs', 'Video Uploaded Successfully.');
             redirect('/admin/cms');
     }
 }
