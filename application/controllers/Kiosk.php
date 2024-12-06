@@ -191,8 +191,10 @@ class Kiosk extends CI_Controller
   {
     date_default_timezone_set('Asia/Manila');
 
-    $code =  $this->input->get("code");        
-    $this->db->where('code', $code);
+    // $code =  $this->input->get("code");      
+    $book_id =  $this->input->get("book_id");        
+
+    $this->db->where('id', $book_id);
     $this->db->where('in_time IS NULL');
     $this->db->where('out_time IS NULL');
     $this->db->order_by('id', 'DESC'); 
@@ -202,7 +204,7 @@ class Kiosk extends CI_Controller
       echo ("No Data.");
       return;
     }
-    $book_id = $data['id'];
+    // $book_id = $data['id'];
     $start_time_index  = $data['start_time'];
     $end_time_index = $data['end_time'];
 
@@ -233,7 +235,7 @@ class Kiosk extends CI_Controller
       return;
     }
     $slot_status = $slots_data['status'];
-    echo $slot_status;
+    // echo $slot_status;
 
     $slot_status = substr($slot_status, 1, -1);
     $slot_status = explode(',', $slot_status);
@@ -242,7 +244,7 @@ class Kiosk extends CI_Controller
       $status = 0;
     }
     $slot_status = '['. implode(',', $slot_status). ']';
-    echo $slot_status;
+    // echo $slot_status;
     //apply
     $this->db->where('Floor', $area_floor);
     $this->db->where('Room', $area_name);
@@ -259,7 +261,7 @@ class Kiosk extends CI_Controller
       // 'out_status' => 'exit',
       'out_time' => date('H:i:s')]);
     
-    echo "succesfully cancelled";
+    echo "successfully cancelled";
 
   }
 #############################################################################  

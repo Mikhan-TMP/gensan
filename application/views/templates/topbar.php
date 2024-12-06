@@ -21,7 +21,7 @@ body {
           color: #2D3748; 
           /* font-size: 2rem; */
           font-weight: bold;
-          " >E-Library Management and Reservation System</h1>
+          " >E-Library Reservation System</h1>
         <!-- <p style="font-style: italic;"></p> -->
         
           <!-- Sidebar Toggle (Topbar) -->
@@ -72,67 +72,85 @@ body {
   <script src="https://js.pusher.com/beams/1.0/push-notifications-cdn.js"></script>
 
 
+<!-- 
+<script>
+var baseUrl = "<?= base_url() ?>";
+var notificationInterval; // Declare a variable to store the interval ID
 
-        <!-- <script>
-            var baseUrl = "<?= base_url() ?>";
-            var notificationInterval; // Declare a variable to store the interval ID
+// Start the notification polling
+function startNotificationPolling() {
+    notificationInterval = setInterval(fetchNotifications, 500);
+}
 
-            // Start the notification polling
-            function startNotificationPolling() {
-                notificationInterval = setInterval(fetchNotifications, 500);
-            }
+// Stop the notification polling
+function stopNotificationPolling() {
+    clearInterval(notificationInterval);
+}
 
-            // Stop the notification polling
-            function stopNotificationPolling() {
-                clearInterval(notificationInterval);
-            }
+// Fetch notifications
+function fetchNotifications() {
+    $.ajax({
+        url: "<?= base_url('Master/getNotifications') ?>", // Fetch both read and unread notifications
+        method: "GET",
+        success: function(data) {
+            let notifications = JSON.parse(data);
+            let unreadCount = notifications.filter(notification => notification.status === 'unread').length;
 
-            // Fetch notifications
-            function fetchNotifications() {
-                $.ajax({
-                    url: "<?= base_url('Master/getNotifications') ?>", // Fetch both read and unread notifications
-                    method: "GET",
-                    success: function(data) {
-                        let notifications = JSON.parse(data);
-                        let unreadCount = notifications.filter(notification => notification.status === 'unread').length;
+            // Update notification count badge
+            $("#notificationCount").text(unreadCount);
 
-                        // Update notification count badge
-                        $("#notificationCount").text(unreadCount);
-
-                        // Update notification list
-                        let listHtml = "";
-                        if (notifications.length > 0) {
-                            notifications.forEach(notification => {
-                                const notificationClass = notification.status === 'unread' ? 'unread' : 'read'; // Set class based on status
-                                listHtml += `
-                                    <li class="dropdown-item ${notificationClass}" data-id="${notification.id}" data-url="<?= base_url() ?>${notification.url}">
-                                        ${notification.message}
-                                        <small class="text-muted d-block">${notification.created_at}</small>
-                                    </li>
-                                `;
-                            });
-                        } else {
-                            listHtml = '<li class="dropdown-item text-muted">No new notifications</li>';
-                        }
-
-                        $("#notificationList").html(listHtml);
-
-                        // Mark notification as read and change appearance when clicked
-                        $(".dropdown-item").click(function() {
-                            var notificationId = $(this).data("id");
-                            var notificationUrl = $(this).data("url");
-
-                            // Mark as read and update appearance
-                            markAsRead(notificationId, $(this));
-
-                            // Redirect to the notification URL
-                            window.location.href = notificationUrl;
-                        });
-                    },
-                    error: function() {
-                        console.error("Failed to fetch notifications.");
-                    }
+            // Update notification list
+            let listHtml = "";
+            if (notifications.length > 0) {
+                notifications.forEach(notification => {
+                    const notificationClass = notification.status === 'unread' ? 'unread' : 'read'; // Set class based on status
+                    listHtml += `
+                        <li class="dropdown-item ${notificationClass}" data-id="${notification.id}" data-url="<?= base_url() ?>${notification.url}">
+                            ${notification.message}
+                            <small class="text-muted d-block">${notification.created_at}</small>
+                        </li>
+                    `;
                 });
+            } else {
+                listHtml = '<li class="dropdown-item text-muted">No new notifications</li>';
             }
+
+            $("#notificationList").html(listHtml);
+        },
+        error: function() {
+            console.error("Failed to fetch notifications.");
+        }
+    });
+}
+
+// Mark notification as read and change appearance when clicked
+$(document).on("click", ".dropdown-item", function() {
+    var notificationId = $(this).data("id");
+    var notificationUrl = $(this).data("url");
+
+    // Mark as read and update appearance
+    markAsRead(notificationId, $(this));
+
+    // Redirect to the notification URL
+    window.location.href = notificationUrl;
+});
+
+// Mark notification as read
+function markAsRead(notificationId, notificationElement) {
+    $.ajax({
+        url: "<?= base_url('Master/markAsRead') ?>",
+        method: "POST",
+        data: {id: notificationId},
+        success: function(data) {
+            let response = JSON.parse(data);
+            if (response.success) {
+                notificationElement.removeClass("unread").addClass("read");
+            }
+        },
+        error: function() {
+            console.error("Failed to mark notification as read.");
+        }
+    });
+}
 </script> -->
 
