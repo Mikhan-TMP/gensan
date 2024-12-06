@@ -2312,7 +2312,7 @@ public function markAllAsRead() {
 
   }
 
-  public function excel_export(){
+  public function excel_export() {
     $d['title'] = 'Attendance';
     $d['account'] = $this->Admin_model->getAdmin($this->session->userdata['username']);
 
@@ -2320,23 +2320,45 @@ public function markAllAsRead() {
     $endDate = $this->input->get('endDate');
     $course = $this->input->get('course');
     $college = $this->input->get('college');
+    $countOnly = $this->input->get('countOnly');
 
     if (!$startDate || !$endDate || !$course || !$college) {
         show_error('Invalid input parameters', 400);
     }
 
     $this->load->model('Excel');
-    $excel_data = $this->Excel->get_filtered_data($startDate, $endDate, $course, $college);
-    if ($excel_data){
-      // $excel_data['excel_data'] = $excel_data;
-      $this->session->set_flashdata('success', 'Data successfully extracted. Wait for a moment to download the excel.');
-      $this->session->set_userdata('excel_data', $excel_data);
-      redirect('attendance');
+
+    // Fetch count data if 'countOnly' is true
+    if ($countOnly == 'true') {
+        $excel_data = $this->Excel->get_filtered_count_data($startDate, $endDate, $course, $college, true);
+        if (!$excel_data) {
+            $this->session->set_flashdata('error', 'No count data found for the given parameters.');
+            redirect('attendance');
+        }
+        //add count_only = true to the excel_data
+        $excel_data['count_only'] = true;
+        // Print the count data and exit immediately
+        // echo "<pre>";
+        // print_r($excel_data); // This will show the count data
+        // echo "</pre>";
+        $this->session->set_flashdata('success', 'Data successfully extracted. Wait for a moment to download the excel.');
+        $this->session->set_userdata('excel_data', $excel_data);
+        redirect('attendance');
     }else{
-      $this->session->set_flashdata('error', 'No data found for the given parameters.');
-      redirect('attendance');
+    // Fetch regular data if 'countOnly' is not set to true
+    $excel_data = $this->Excel->get_filtered_data($startDate, $endDate, $course, $college, false);
+
+    if ($excel_data) {
+        $this->session->set_flashdata('success', 'Data successfully extracted. Wait for a moment to download the excel.');
+        $this->session->set_userdata('excel_data', $excel_data);
+        redirect('attendance');
+    } else {
+        $this->session->set_flashdata('error', 'No data found for the given parameters.');
+        redirect('attendance');
     }
-  }
+    }
+}
+
   public function unset_excel_data() {
     $this->session->unset_userdata('excel_data');
     echo json_encode(['status' => 'success']);

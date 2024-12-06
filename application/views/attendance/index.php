@@ -153,90 +153,111 @@
  <!-- THIS WILL OPEN THE MODAL -->
 <script>
     document.getElementById('exportCsv').addEventListener('click', function () {
-        Swal.fire({
-            title: 'Export Attendance Data',
-            html: `
-                <form id="exportForm">
-                    <div class="mb-3 text-left" style="color: #272727; font-weight: 500; font-size: small;">
-                        <label for="startDate" class="form-label text-left">Start Date</label>
-                        <input type="date" id="startDate" name="startDate" class="form-control">
-                    </div>
-                    <div class="mb-3 text-left" style="color: #272727; font-weight: 500; font-size: small;">
-                        <label for="endDate" class="form-label">End Date</label>
-                        <input type="date" id="endDate" name="endDate" class="form-control">
-                    </div>
-                    <div class="mb-3 d-flex" style="justify-content: right;">
-                        <div class="btn-group" style=" gap: 10px;">
-                            <button type="button" class="p-2" style=" border: none; font-weight: 500; font-size: small; border-radius: 5px; background: linear-gradient(180deg, #BE110E, #630908); color: white; min-width: 100px" id="todayButton">Today</button>
-                            <button type="button" class="p-2" id="yesterdayButton"  style="border: none; font-weight: 500; font-size: small; border-radius: 5px; background: linear-gradient(180deg, #BE110E, #630908); color: white; min-width: 100px ">Yesterday</button>
-                            <select class="form-select" id="range" name="range"  style="border: none; font-weight: 500; font-size: small; border-radius: 5px; background: linear-gradient(180deg, #FFD602, #FAB703, #D6890E);  color: black; ">
-                                <option value="">Select Range</option>
-                                <option value="7">Last 1 week</option>
-                                <option value="14">Last 2 weeks</option>
-                                <option value="21">Last 3 weeks</option>
-                                <option value="28">Last 4 weeks</option>
-                                <option value="lastmonth">Last month</option>
-                                <option value="last2months">Last 2 months</option>
-                                <option value="last3months">Last 3 months</option>
-                                <option value="last6months">Last 6 months</option>
-                                <option value="lastyear">Last year</option>
-                            </select>
-                        </div>
-
-                    </div>
-                    
-                    <div class="mb-3 text-left" style="color: #272727; font-weight: 500; font-size: small;">
-                        <label for="college" class="form-label" >Select College</label>
-                        <select id="college" name="college" class="form-control">
-                            <option value="All">All Colleges</option>
-                            <?php
-                            $colleges = array_unique(array_column($attendance, 'college'));
-                            foreach ($colleges as $college) :
-                                ?>
-                                <option value="<?= $college ?>"><?= $college ?></option>
-                            <?php endforeach; ?>
+    Swal.fire({
+        title: 'Export Attendance Data',
+        html: `
+            <form id="exportForm">
+                <div class="mb-3 text-left" style="color: #272727; font-weight: 500; font-size: small;">
+                    <label for="startDate" class="form-label text-left">Start Date</label>
+                    <input type="date" id="startDate" name="startDate" class="form-control">
+                </div>
+                <div class="mb-3 text-left" style="color: #272727; font-weight: 500; font-size: small;">
+                    <label for="endDate" class="form-label">End Date</label>
+                    <input type="date" id="endDate" name="endDate" class="form-control">
+                </div>
+                <div class="mb-3 d-flex" style="justify-content: right;">
+                    <div class="btn-group" style=" gap: 10px;">
+                        <button type="button" class="p-2" style=" border: none; font-weight: 500; font-size: small; border-radius: 5px; background: linear-gradient(180deg, #BE110E, #630908); color: white; min-width: 100px" id="todayButton">Today</button>
+                        <button type="button" class="p-2" id="yesterdayButton"  style="border: none; font-weight: 500; font-size: small; border-radius: 5px; background: linear-gradient(180deg, #BE110E, #630908); color: white; min-width: 100px ">Yesterday</button>
+                        <select class="form-select" id="range" name="range"  style="border: none; font-weight: 500; font-size: small; border-radius: 5px; background: linear-gradient(180deg, #FFD602, #FAB703, #D6890E);  color: black; ">
+                            <option value="">Select Range</option>
+                            <option value="7">Last 1 week</option>
+                            <option value="14">Last 2 weeks</option>
+                            <option value="21">Last 3 weeks</option>
+                            <option value="28">Last 4 weeks</option>
+                            <option value="lastmonth">Last month</option>
+                            <option value="last2months">Last 2 months</option>
+                            <option value="last3months">Last 3 months</option>
+                            <option value="last6months">Last 6 months</option>
+                            <option value="lastyear">Last year</option>
                         </select>
                     </div>
-                    
-                    <div class="mb-3 text-left" style="color: #272727; font-weight: 500; font-size: small;">
-                        <label for="course" class="form-label">Select Course</label>
-                        <select id="course" name="course" class="form-control">
-                            <option value="All">All Courses</option>
-                            <?php
-                            $courses = array_unique(array_column($attendance, 'course'));
-                            foreach ($courses as $course) :
-                                ?>
-                                <option value="<?= $course ?>"><?= $course ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                </form>
+                </div>
 
-            `,
-            showCancelButton: true,
-            confirmButtonColor: '#BE110E',
-            confirmButtonText: 'Export',
-            preConfirm: () => {
-                const startDate = document.getElementById('startDate').value;
-                const endDate = document.getElementById('endDate').value;
-                const course = document.getElementById('course').value;
-                const college = document.getElementById('college').value;
+                <div class="mb-3 text-left" style="color: #272727; font-weight: 500; font-size: small;">
+                    <label for="college" class="form-label" >Select College</label>
+                    <select id="college" name="college" class="form-control">
+                        <option value="All">All Colleges</option>
+                        <?php
+                        $colleges = array_unique(array_column($attendance, 'college'));
+                        foreach ($colleges as $college) :
+                        ?>
+                            <option value="<?= $college ?>"><?= $college ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
 
-                if (!startDate || !endDate) {
-                    Swal.showValidationMessage('Please select a valid date range');
-                }
+                <div class="mb-3 text-left" style="color: #272727; font-weight: 500; font-size: small;">
+                    <label for="course" class="form-label">Select Course</label>
+                    <select id="course" name="course" class="form-control">
+                        <option value="All">All Courses</option>
+                        <?php
+                        $courses = array_unique(array_column($attendance, 'course'));
+                        foreach ($courses as $course) :
+                        ?>
+                            <option value="<?= $course ?>"><?= $course ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+            </form>
+        `,
+        showCancelButton: true,
+        confirmButtonColor: '#BE110E',
+        confirmButtonText: 'Export',
+        showDenyButton: true,
+        denyButtonText: 'Count Only',
+        preConfirm: () => {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            const course = document.getElementById('course').value;
+            const college = document.getElementById('college').value;
 
-                return { startDate, endDate, course, college };
+            if (!startDate || !endDate) {
+                Swal.showValidationMessage('Please select a valid date range');
+                return false;
             }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                const { startDate, endDate, course, college } = result.value;
-                const url = `<?= base_url('master/excel_export?startDate=') ?>${startDate}&endDate=${endDate}&course=${course}&college=${college}`;
-                window.location.href = url;
+
+            return { startDate, endDate, course, college };
+        },
+        preDeny: () => {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            const course = document.getElementById('course').value;
+            const college = document.getElementById('college').value;
+
+            if (!startDate || !endDate) {
+                Swal.showValidationMessage('Please select a valid date range');
+                return false;
             }
 
-        });
+            return { startDate, endDate, course, college };
+        }
+    }).then((result) => {
+        const { startDate, endDate, course, college } = result.value;
+
+        // If "Count Only" was clicked
+        if (result.isDenied) {
+            const url = `<?= base_url('master/excel_export?startDate=') ?>${startDate}&endDate=${endDate}&course=${course}&college=${college}&countOnly=true`;
+            window.location.href = url;
+        }
+        // If "Export" was clicked
+        else if (result.isConfirmed) {
+            const url = `<?= base_url('master/excel_export?startDate=') ?>${startDate}&endDate=${endDate}&course=${course}&college=${college}`;
+            window.location.href = url;
+        }
     });
+});
+
 </script>
 
 <!-- FOR TODAY YESTERDAY  -->
@@ -483,9 +504,72 @@
 </script> -->
 
 <script>
-    const excelData = <?php echo json_encode($this->session->userdata('excel_data')); ?>;
-    console.log("Excel Data:", excelData);
+const excelData = <?php echo json_encode($this->session->userdata('excel_data')); ?>;
+console.log("Excel Data:", excelData);
+// log the count_only property
+console.log("Count Only:", excelData.count_only);
+if (excelData.count_only) {
+    // Display summarized count data
 
+
+    const countSummary = Object.values(excelData).filter(item => typeof item === "object");
+    console.log("Count Only Data:", excelData);
+    const customHeaders = [
+        { key: 'course', displayName: 'Course' },
+        { key: 'college', displayName: 'College' },
+        { key: 'count', displayName: 'Count' }
+    ];
+
+    function downloadCountSummary() {
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet("Attendance Summary Report");
+
+        worksheet.mergeCells('A1:D1');
+        worksheet.getCell('A1').value = 'Attendance Summary Report';
+        worksheet.getCell('A1').font = { bold: true, size: 28 };
+        worksheet.getCell('A1').alignment = { horizontal: 'center', vertical: 'center' };
+        worksheet.getCell('A1:D1').fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FFC08080' }
+        };
+
+        // Add the header in the second row
+        const headerRow = customHeaders.map(header => header.displayName);
+        worksheet.addRow(headerRow);
+
+        // Add data rows
+        countSummary.forEach(row => {
+            const rowData = customHeaders.map(header => row[header.key] || '');
+            worksheet.addRow(rowData);
+        });
+
+        // Adjust column widths
+        worksheet.columns = [
+            { width: 30 }, // Course
+            { width: 25 }, // College
+            { width: 10 }  // Count
+        ];
+
+        // Save the file
+        workbook.xlsx.writeBuffer().then(buffer => {
+            const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+            saveAs(blob, "Attendance_Summary.xlsx");
+        });
+
+        // Unset the session data after download
+        fetch('<?php echo base_url("master/unset_excel_data"); ?>', {
+            method: 'POST'
+        }).then(response => {
+            console.log('Session data unset successfully');
+        }).catch(error => {
+            console.error('Error unsetting session data:', error);
+        });
+    }
+
+    downloadCountSummary();
+} else {
+    // Proceed with the usual Excel generation logic
     const customHeaders = [
         { key: 'id', displayName: '#' },
         { key: 'rfid', displayName: 'RFID' },
@@ -516,17 +600,6 @@
             fgColor: { argb: 'FFC08080' }
         };
 
-        // Add border to the header row
-        worksheet.getCell('A1:M1').border = {
-            top: { style: 'thin' },
-            bottom: { style: 'thin' },
-            left: { style: 'thin' },
-            right: { style: 'thin' }
-        };
-
-        // worksheet.getCell('A2').value = 'Date: ' + excelData[0].date;
-        
-
         // Add the header in the third row
         const headerRow = customHeaders.map(header => header.displayName);
         worksheet.addRow(headerRow);
@@ -554,38 +627,6 @@
             { width: 20 }  // Kiosk
         ];
 
-        // Adjust header row height
-        worksheet.getRow(1).height = 50;
-        worksheet.getRow(2).height = 30;
-
-        worksheet.getRow(3).height = 25;
-        worksheet.getRow(3).font = { bold: true };
-
-        // Add borders to the table (Header + Data)
-        const lastRow = worksheet.lastRow.number;
-        const lastColumn = customHeaders.length;
-
-        const borderStyle = {
-            top: { style: 'thin' },
-            left: { style: 'thin' },
-            bottom: { style: 'thin' },
-            right: { style: 'thin' }
-        };
-
-        // Apply borders to header row (now row 3)
-        for (let col = 1; col <= lastColumn; col++) {
-            const cell = worksheet.getCell(3, col);
-            cell.border = borderStyle;
-        }
-
-        // Apply borders to all data rows (starting from row 4)
-        for (let row = 4; row <= lastRow; row++) {
-            for (let col = 1; col <= lastColumn; col++) {
-                const cell = worksheet.getCell(row, col);
-                cell.border = borderStyle;
-            }
-        }
-
         // Save the file
         workbook.xlsx.writeBuffer().then(buffer => {
             const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
@@ -603,6 +644,8 @@
     }
 
     downloadExcel();
+}
+
 </script>
 
 
