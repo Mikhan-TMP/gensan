@@ -1,3 +1,98 @@
+<style>
+/* Basic reset and styling */
+
+/* Tooltip container */
+.tooltip-container {
+  position: relative;
+  display: inline-block;
+  /* margin: 20px; */
+}
+
+/* Icon styling */
+.icon {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition:
+    transform 0.3s ease,
+    filter 0.3s ease;
+}
+
+/* SVG Animation: Rotate and scale effect */
+.icon .fas {
+  transition: transform 0.5s ease-in-out;
+}
+
+.icon:hover .fas {
+  transform: rotate(360deg) scale(1.2);
+}
+
+/* Tooltip styling */
+.tooltip {
+  visibility: hidden;
+  width: 200px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 5px;
+  padding: 10px;
+  position: absolute;
+  bottom: 125%; /* Position above the icon */
+  left: 50%;
+  margin-left: -100px; /* Center the tooltip */
+  opacity: 0;
+  transition:
+    opacity 0.5s,
+    transform 0.5s;
+  transform: translateY(10px);
+}
+
+/* Tooltip Arrow */
+.tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #333 transparent transparent transparent;
+}
+
+/* Show tooltip on hover */
+.tooltip-container:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes bounce {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-30px);
+  }
+  60% {
+    transform: translateY(-15px);
+  }
+}
+
+.tooltip-container:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+  animation: bounce 0.6s ease;
+}
+
+</style>
 <!-- Begin Page Content -->
 <div class="container-fluid">
   <!-- Page Heading -->
@@ -56,19 +151,32 @@
             <tr>                      
               <th>ID</th>
               <th>Floor</th>
-              <th>Room Name</th>
+              <th>Area</th>
               <th>Seat</th>
-              <th>8AM</th>
-              <th>9AM</th>
-              <th>10AM</th>
-              <th>11AM</th>
-              <th>12PM</th>
-              <th>1PM</th>
-              <th>2PM</th>
-              <th>3PM</th>
-              <th>4PM</th>
-              <th>5PM</th>
-              <th>6PM</th>                     
+              <th>8-9AM </th>
+              <th>9-10AM</th>
+              <th>10-11AM</th>
+              <th>11AM-12PM</th>
+              <th>12PM-1PM</th>
+              <th>1PM-2PM</th>
+              <th>2PM-3PM</th>
+              <th>3PM-4PM</th>
+              <th>4PM-5PM</th>
+              <th>5PM-6PM</th>
+              <th>6PM-7PM</th>
+
+              
+              
+              <!-- <th>8-9 AM</th>
+              <th>9-10 AM</th>
+              <th>10-11 AM</th>
+              <th>11-12 PM</th>
+              <th>12-1 PM</th>
+              <th>1-2 PM</th>
+              <th>2-3 PM</th>
+              <th>3-4 PM</th>
+              <th>4-5 PM</th>
+              <th>5-6 PM</th> -->
             </tr>
           </thead>
           
@@ -87,30 +195,35 @@
                 <td class="align-middle"><?= $dpt['Floor']; ?></td>
                 <td class="align-middle"><?= $dpt['Room']; ?></td>
                 <td class="align-middle"><?= $dpt['Slot']; ?></td>
-                <?php for($i=0;$i < 11; $i++){ 
+
+                <?php
+                $slot_elements = count(explode(',',$dpt['status']));
+                for($i=0;$i < $slot_elements; $i++){ 
                           if ($timeslot[$i]==1) {  ?>
                             <td class="align-middle" >
-                            <i class="fas fa-chair" style="font-size:30px;color: #f32133;"></i>
-                              <!-- <i class="fas fa-clock" style="font-size:30px;color:#f32133"></i> -->
+                              <div class="tooltip-container">
+                                <div class="icon">
+                                  <i class="fas fa-chair" style="font-size:30px;color: #f32133;"></i>
+                                </div>
+                                <div class="tooltip">
+                                  <p>Seat # <?php echo $dpt['Slot']; ?> is not avaiable for this time slot. </p>
+                                </div>
+                              </div>
                             </td> 
                           <?php } else { ?>
-                            <!-- available -->
-                             <!-- <td class="align-middle"><i class="fas fa-circle" style="font-size:30px;color:#28a745"></i></td>
- -->
                             <td class="align-middle">
-                              <!-- seat icon -->
-                              <!-- <i class="fas fa-hourglass" style="font-size:30px;color:#6bc1e6"></i> -->
-                              <i class="fas fa-chair" style="font-size:30px;color:#6bc1e6"></i>
+                            <!-- <i class="fas fa-chair" style="font-size:30px;color:#6bc1e6"></i> -->
+                            <div class="tooltip-container">
+                              <div class="icon">
+                                <i class="fas fa-chair" style="font-size:30px;color:#6bc1e6"></i>
+                              </div>
+                              <div class="tooltip">
+                                <p>Seat # <?php echo $dpt['Slot']; ?> is avaiable for this time slot. </p>
+                              </div>
+                            </div>
                             </td> 
                           <?php } 
-                      } ?>                        
-                <!-- td onclick="alert('You clicked on the first cell')" class="align-middle text-center">
-                  <a href="<?= base_url('master/e_room/') . $dpt['id'] ?>" class="btn btn-primary btn-circle">
-                    <span class="icon text-white" title="Edit">
-                      <i class="fas fa-edit"></i>
-                    </span>
-                  </a> 
-                </td -->
+                      } ?>
               </tr>
             <?php endforeach; ?>
           </tbody>

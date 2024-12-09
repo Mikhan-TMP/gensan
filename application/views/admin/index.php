@@ -1,4 +1,7 @@
-       <!-- Begin Page Content -->
+<style>
+  
+</style>
+<!-- Begin Page Content -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 <div class="container-fluid">
 <!-- Page Heading -->
@@ -42,40 +45,56 @@
              </div>
            </div>
 
-           <div class="modal fade" id="modalSeatReservation" tabindex="-1" role="dialog" aria-labelledby="modalSeatReservationTitle" aria-hidden="true">
-             <div class="modal-dialog modal-dialog-centered" role="document">
-               <div class="modal-content">
-                 <div class="modal-header">
-                   <h5 class="modal-title" id="modalSeatReservationTitle">Total Seats Available</h5>
-                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                     <span aria-hidden="true">&times;</span>
-                   </button>
-                 </div>
-                 <div class="modal-body">
-                   <div class="row no-gutters align-items-center">
-                     <div class="col mr-2">
-                       <div class="text-xs font-weight-bold text-muted mb-1">Seats Available Today</div>
-                       <div class="h5 mb-0 font-weight-bold text-dark mb-4"><?php echo ($area_slot) ?></div>
-                     </div>
-                   </div>
-                   <div class="row no-gutters align-items-center">
-                     <div class="col mr-2">
-                       <div class="text-xs font-weight-bold text-muted mb-1">Seats Avaiable per Area</div>
-                       <?php 
-                       foreach ($area_seats as $area) {
-                         echo '<div>'.$area['room'].': '.$area['slotnumber'].'</div>';
-                       }
-                       ?>
-                       <!-- <div class="h5 mb-0 font-weight-bold text-dark mb-4"><?php echo ($area_slot) ?></div> -->
-                     </div>
-                   </div>
-                 </div>
-                 <div class="modal-footer">
-                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                 </div>
-               </div>
-             </div>
-           </div>
+          <div class="modal fade" id="modalSeatReservation" tabindex="-1" role="dialog" aria-labelledby="modalSeatReservationTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header text-white" style = "background: linear-gradient(180deg, #BE110E, #630908)">
+                  <h5 class="modal-title" id="modalSeatReservationTitle"><i class="fas fa-chair"></i> Total Seats Available</h5>
+                  <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <!-- Seats Available Today -->
+                  <div class="row mb-3">
+                    <div class="col-12">
+                      <div class="d-flex align-items-center">
+                        <i class="fas fa-calendar-check text-muted mr-3" style="font-size: 1.5rem;"></i>
+                        <div>
+                          <div class="text-xs font-weight-bold text-muted mb-1">Seats Available Today</div>
+                          <div class="h5 mb-0 font-weight-bold text-dark"><?php echo ($area_slot) ?></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Seats Available per Area -->
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="d-flex align-items-center">
+                        <i class="fas fa-map-marker-alt text-muted mr-3" style="font-size: 1.5rem;"></i>
+                        <div>
+                          <div class="text-xs font-weight-bold text-muted mb-1">Seats per area</div>
+                          <div class="h6">
+                            <?php 
+                            foreach ($area_seats as $area) {
+                              echo '<div><i class="fas fa-arrow-right text-primary mr-2"></i>'.$area['room'].': '.$area['slotnumber'].'</div>';
+                            }
+                            ?>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times-circle"></i> Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
 
            <!-- Earnings (Monthly) Card Example -->
            <div class="col-xl-3 col-md-6 mb-4" data-toggle="modal" data-target="#modalTotalReservation" style="cursor: pointer">
@@ -93,44 +112,67 @@
                </div>
              </div>
            </div>
-
            <div class="modal fade" id="modalTotalReservation" tabindex="-1" role="dialog" aria-labelledby="modalSeatReservationTitle" aria-hidden="true">
-             <div class="modal-dialog modal-dialog-centered" role="document">
-               <div class="modal-content">
-                 <div class="modal-header">
-                   <h5 class="modal-title" id="modalSeatReservationTitle">Total Reservation</h5>
-                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                     <span aria-hidden="true">&times;</span>
-                   </button>
-                 </div>
-                 <div class="modal-body">
-                   <div class="row no-gutters align-items-center">
-                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-muted mb-1">Total Reservations</div>
-                      <div class="h5 mb-0 font-weight-bold text-dark mb-4"><?= $reservation; ?> </div>
-                     </div>
-                   </div>
-                   <div class="row no-gutters align-items-center">
-                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-muted mb-1">Today: </div>
-                      <div class="h5 mb-0 font-weight-bold text-dark mb-4"><?= $reservation_today; ?> </div>
-                     </div>
-                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-muted mb-1">Yesterday: </div>
-                      <div class="h5 mb-0 font-weight-bold text-dark mb-4"><?= $reservation_yesterday; ?> </div>
-                     </div>
-                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-muted mb-1">Tomorrow: </div>
-                      <div class="h5 mb-0 font-weight-bold text-dark mb-4"><?= $reservation_tomorrow; ?> </div>
-                     </div>
-                   </div>
-                 </div>
-                 <div class="modal-footer">
-                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                 </div>
-               </div>
-             </div>
-           </div>
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header text-white" style = "background: linear-gradient(180deg, #BE110E, #630908)">
+                  <h5 class="modal-title" id="modalSeatReservationTitle"><i class="fas fa-calendar-alt"></i> Total Reservation</h5>
+                  <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <!-- Total Reservations -->
+                  <div class="row mb-3">
+                    <div class="col-12">
+                      <div class="d-flex align-items-center">
+                        <i class="fas fa-users text-muted mr-3" style="font-size: 1.5rem;"></i>
+                        <div>
+                          <div class="text-xs font-weight-bold text-muted mb-1">Total Reservations</div>
+                          <div class="h5 mb-0 font-weight-bold text-dark"><?= $reservation; ?></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Reservations by Date -->
+                  <div class="row">
+                    <div class="col-4">
+                      <div class="d-flex align-items-center">
+                        <i class="fas fa-calendar-day text-muted mr-3" style="font-size: 1.5rem;"></i>
+                        <div>
+                          <div class="text-xs font-weight-bold text-muted mb-1">Today</div>
+                          <div class="h6 mb-0 font-weight-bold text-dark"><?= $reservation_today; ?></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-4">
+                      <div class="d-flex align-items-center">
+                        <i class="fas fa-calendar-check text-muted mr-3" style="font-size: 1.5rem;"></i>
+                        <div>
+                          <div class="text-xs font-weight-bold text-muted mb-1">Yesterday</div>
+                          <div class="h6 mb-0 font-weight-bold text-dark"><?= $reservation_yesterday; ?></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-4">
+                      <div class="d-flex align-items-center">
+                        <i class="fas fa-calendar-plus text-muted mr-3" style="font-size: 1.5rem;"></i>
+                        <div>
+                          <div class="text-xs font-weight-bold text-muted mb-1">Tomorrow</div>
+                          <div class="h6 mb-0 font-weight-bold text-dark"><?= $reservation_tomorrow; ?></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times-circle"></i> Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
 
 
            <!-- Pending Requests Card Example -->
@@ -481,3 +523,6 @@
               }
             });
             </script>
+
+
+<script> </script>

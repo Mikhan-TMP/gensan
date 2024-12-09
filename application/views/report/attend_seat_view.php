@@ -208,6 +208,8 @@
                         echo 'style="background-color: #f9ecec;"'; 
                     } else if ($atd['in_status'] == "occupied" && $atd['out_status'] == "late-exit") {
                         echo 'style="background-color: #fff4e6;"'; 
+                    } else if ($atd['in_status'] == "late-in" && $atd['out_status'] == "late-exit"){
+                        echo 'style="background-color: #ffcccc;"';
                     } else if ($atd['in_status'] == "occupied" && $atd['out_status'] == "f-timeout") {
                         echo 'style="background-color: #f3f3ff;"'; 
                     } else if ($atd['in_status'] == "cancelled" || $atd['out_status'] == "cancelled") {
@@ -319,6 +321,9 @@
                             }
                             else if ($atd['in_status'] == "occupied" && $atd['out_status'] == "late-exit"){
                               echo "Late Exit";
+                            }
+                            else if ($atd['in_status'] == "late-in" && $atd['out_status'] == "late-exit"){
+                              echo "Late";
                             }
                             else if ($atd['in_status'] == "occupied" && $atd['out_status'] == "f-timeout"){
                               echo "Timed out";

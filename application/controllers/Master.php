@@ -153,43 +153,99 @@ public function area()
         'max_slot' => $this->input->post('max_slot')
       ];
         // Initialize the needed variables.
-        $seat_number = $this->input->post('d_seat') + 1;
+        $seat_number = $this->input->post('d_seat');
         $area_floor = $this->input->post('d_floor');
         $area_name = $this->input->post('d_name');
         $old_seat_number = $d['d_old']['slotnumber'];
+
+        //since we need the status as well, get the open time and close time of the area
+        $open_time = $this->input->post('open_time');
+        $close_time = $this->input->post('close_time');
+        //generate the time range from open time to close time
+        $start_hour = (int)date('H', strtotime($open_time)); // 8
+        $end_hour = (int)date('H', strtotime($close_time)); // 17
+        
+        // Create the range of hours
+        $hour_ranges = [];
+        $hour_blocks = [];
+        
+        // Generate the hourly ranges and fill the array with zeros
+        for ($i = $start_hour; $i < $end_hour; $i++) {
+            $hour_ranges[] = "$i-" . ($i + 1); // Example: "8-9", "9-10"
+            $hour_blocks[] = 0;                // Add 0 for each hour block
+        }
+        
+
+        //convert hourblocks to string.
+        $hour_blocks_string = '[' . implode(',', $hour_blocks) . ']';
+        // echo "<br>";
+        // echo $hour_blocks_string;
+        // echo "<br>";
+
+
         date_default_timezone_set('Asia/Manila');
         $current_date = date('Y-m-d');
+        
+        // Fetch the minimum date greater than or equal to the current date
+        $min_date_query = $this->db->select_min('date')
+            ->from('slot')
+            ->where('Floor', $area_floor)
+            ->where('Room', $area_name)
+            ->where('date >=', $current_date)
+            ->get();
+        $min_date = $min_date_query->row()->date ?? null; // Handle null if no result
+        
+        // Fetch the maximum date greater than or equal to the current date
+        $max_date_query = $this->db->select_max('date')
+            ->from('slot')
+            ->where('Floor', $area_floor)
+            ->where('Room', $area_name)
+            ->where('date >=', $current_date)
+            ->get();
+        $max_date = $max_date_query->row()->date ?? null; // Handle null if no result
 
-        // If old seat number is greater than the new seat number, delete the records
-        if ($old_seat_number > $seat_number) {
-            // Loop starting from seat number and above
-            for ($i = $seat_number; $i <= $old_seat_number; $i++) {
-                $this->db->where('date >=', $current_date)
-                        ->where('Slot', $i)
-                        ->where('floor', $area_floor)
-                        ->where('Room', $area_name)
-                        ->delete('slot');
-            }
-        } 
-        // If old seat number is smaller than the new seat number, add records
-        //ERROR NOW. FIX SA MONDAY IT ADDS PERO WALA RAW DATE lmao.
-        else if ($old_seat_number < $seat_number) {
-            // Loop starting from old seat number + 1 to new seat number
-            for ($i = $old_seat_number + 1; $i < $seat_number; $i++) {
-                // You can customize the status and uniqueid based on your needs
-                $data = [
-                    'date' => $current_date,
-                    'Floor' => $area_floor,
-                    'Room' => $area_name,
-                    'Slot' => $i,
-                    'status' => '[0,0,0,0,0,0,0,0,0,0]', // Example status
-                    'uniqueid' => ''
-                ];
-                $this->db->insert('slot', $data);
+        // Ensure min_date and max_date are valid
+        if ($min_date && $max_date) {
+            // Fetch all distinct dates in the range
+            $dates_query = $this->db->select('DISTINCT date', false) // Use DISTINCT for unique values
+            ->from('slot')
+            ->where('Floor', $area_floor)
+            ->where('Room', $area_name)
+            ->where('date >=', $min_date)
+            ->where('date <=', $max_date)
+            ->order_by('date', 'ASC')
+            ->get();
+          $dates = $dates_query->result_array();
+        
+            // Iterate over each date
+            foreach ($dates as $date_row) {
+                $current_loop_date = $date_row['date'];
+        
+                // If old_seat_number > new_seat_number, delete records
+                if ($old_seat_number > $seat_number) {
+                    for ($i = $seat_number + 1; $i <= $old_seat_number; $i++) {
+                        $this->db->where('date', $current_loop_date)
+                            ->where('Slot', $i)
+                            ->where('Floor', $area_floor)
+                            ->where('Room', $area_name)
+                            ->delete('slot');
+                    }
+                }
+        
+                // If old_seat_number < new_seat_number, add records
+                elseif ($old_seat_number < $seat_number) {
+                  for ($i = $old_seat_number + 1; $i <= $seat_number; $i++) {
+                    $query = "
+                    INSERT INTO slot (`date`, `Slot`, `Floor`, `status`, `Room`)
+                    VALUES ('" . $current_loop_date . "', " . $i . ", '" . $area_floor . "', '" . $hour_blocks_string . "', '" . $area_name . "')
+                    ";
+                    $this->db->query($query);
+                  }
+                }
+              
+              
             }
         }
-
-
 
       $this->db->update('area', $data, ['id' => $d_id]);
       $rows = $this->db->affected_rows();
@@ -198,7 +254,7 @@ public function area()
       } else {
         $this->session->set_flashdata('area_fail', 'Failed to Edit an Area!');
       }
-      
+
       redirect('master/area');
     }
   }
