@@ -1,3 +1,50 @@
+<style>
+.nav-item {
+    transition: background-color .5s ease, transform .5s ease;
+}
+
+.nav-item .nav-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 5px;
+    border-radius: 10px;
+    color: #333; /* Default text color */
+    transition: color .5s ease;
+}
+
+/* Hover effect */
+.nav-item:not(.active) .nav-link:hover {
+    /* background-color: #007bff; Change background color on hover */
+    background: linear-gradient(180deg, rgb(236 54 54 / 87%) 0%, rgb(68 68 68) 100%);
+    color: #fff; /* Change text color on hover */
+    transform: translateY(-3px); /* Slight "lift" effect */
+}
+
+/* Styling for active state */
+.nav-item.active .nav-link {
+    /* background: linear-gradient(180deg, #031084, #000748); */
+    color: #fff; /* Active text color */
+    transform: none; /* No lift effect */
+}
+
+.nav-item .nav-link i {
+    transition: background-color .5s ease, color .5s ease;
+}
+
+/* Icon styling on hover */
+.nav-item:not(.active) .nav-link:hover i {
+    /* background: linear-gradient(180deg, #031084, #000748); */
+    color: #fff; /* Change icon color on hover */
+}
+
+/* Icon styling for active state */
+.nav-item.active .nav-link i {
+    /* background-color: #003d7a; Active icon background color */
+    color: #fff; /* Active icon color */
+}
+
+</style>
 <!-- Sidebar -->
     <!-- <ul class="navbar-nav sidebar sidebar-dark accordion"  -->
     <ul class="navbar-nav sidebar"id="accordionSidebar" style="background-color: white; box-shadow: -12px 0px 17px 2px #000000;z-index: 1;">
@@ -6,7 +53,7 @@
     <div class="sidebar-brand align-items-center mt-1">
       <a class="sidebar-brand d-flex align-items-center justify-content-center" style="flex-direction: column;" href="">
         <img  class="center img-fluid" src="<?= base_url('images/') . 'LIBRARY.png'; ?> " width="48px">
-        <p class="text-center mt-2 mb-2 ml-1" style="font-weight: bold; color: #2D3748;">MSU-Gensan DASHBOARD</p>
+        <p class="text-center mt-2 mb-2 ml-1" style="font-weight: bold; color: #2D3748;">MSU-GENSAN</p>
       </a>
     </div>
       <div class="mt-4">

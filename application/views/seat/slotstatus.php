@@ -107,10 +107,10 @@
             <?= form_error('start', '<small class="text-danger pl-3">', '</small>') ?>
           </div>         
           <div class="col-3">
-            <select class="form-control" name="room">              
-              <option value="all">All</option>
+            <select class="form-control" name="room" style="color: white; background: linear-gradient(180deg, #BE110E, #630908);">              
+              <option value="all" style="color: black">All</option>
               <?php foreach ($roomlist as $d) : ?>
-                <option value="<?= $d['room']; ?>"><?= $d['floor']." : ".$d['room']; ?></option>
+                <option style="color: black" value="<?= $d['room']; ?>"><?= $d['floor']." : ".$d['room']; ?></option>
               <?php endforeach; ?>
             </select>
             <?= form_error('room', '<small class="text-danger pl-3">', '</small>') ?>
@@ -130,7 +130,7 @@
       </form>
     </div>
   </div><br>
-  <div class="card shadow mb-4">
+  <div class="card shadow mb-4" style="border-radius: 15px;">
     <div class="card-header py-3 d-flex" 
                     style="justify-content: space-between;
                           border-top-left-radius: 15px;

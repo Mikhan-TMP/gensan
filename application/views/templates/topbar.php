@@ -1,3 +1,33 @@
+
+<style>
+            .responsive-heading {
+                color: #2D3748;
+                font-size: 2rem; /* Default font size for larger screens */
+                font-weight: bold;
+                text-align: center;
+            }
+
+            @media screen and (max-width: 768px) {
+                /* Styles for tablets and smaller devices */
+                .responsive-heading {
+                font-size: 20px;
+                }
+            }
+
+            @media screen and (max-width: 480px) {
+                /* Styles specifically for phones */
+                .responsive-heading {
+                font-size: 15px;
+                }
+            }
+            #userDropdown:hover {
+                /* background-color: #007bff; Change background color on hover */
+                background: none;
+                /* color: #fff; Change text color on hover */
+                transform: translateY(0px); 
+            }
+            </style>
+
 <link href='https://fonts.googleapis.com/css?family=Alfa Slab One' rel='stylesheet'>
 <!-- style>
 body {
@@ -17,17 +47,13 @@ body {
         <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top"
         style="border-bottom: 1px solid #00000017;">
         <!-- <h1 class="text-center" >Library Management System</h1> -->
-        <h1 class="text-center h1" style="
-          color: #2D3748; 
-          /* font-size: 2rem; */
-          font-weight: bold;
-          " >E-Library Reservation System</h1>
         <!-- <p style="font-style: italic;"></p> -->
         
           <!-- Sidebar Toggle (Topbar) -->
           <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
             <i class="fa fa-bars"></i>
           </button>
+            <h1 class="text-center responsive-heading">E-Library Reservation System</h1>
           
           <!-- Topbar Navbar -->
           <ul class="navbar-nav ml-auto align-items-center">
@@ -37,20 +63,17 @@ body {
                   
             </div>
 
-            <div class="dropdown" id="notificationArea">
-                <!-- Notification Icon with Badge -->
+            <!-- <div class="dropdown" id="notificationArea">
                 <a class="btn position-relative mr-3" href="#" role="button" id="notificationDropdown" data-toggle="dropdown" aria-expanded="false">
-                    <i class="fas fa-bell"></i> <!-- Font Awesome Bell Icon -->
+                    <i class="fas fa-bell"></i>
                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger text-light" id="notificationCount">
                         0
                     </span>
                 </a>
-              <!-- Notification Dropdown List -->
                 <ul class="dropdown-menu dropdown-menu-right cursor-pointer" style="padding: 10px; cursor: pointer;" aria-labelledby="notificationDropdown" id="notificationList">
-                    <!-- Existing Notifications will be dynamically inserted here -->
                     <li class="dropdown-item text-muted ">No new notifications</li>
                 </ul>
-            </div>
+            </div> -->
             <li class="nav-item dropdown no-arrow" id="userDropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?= $account['name']; ?></span>

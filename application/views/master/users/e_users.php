@@ -14,7 +14,7 @@
           <form action="<?= base_url('master/edit_user_access') ?>" method="POST" class="col-lg-12 p-0 mb-5">
             <div class="row">
               <div class="col-lg-6 m-auto">
-                <div class="card">          
+                <div class="card" style ="    border-radius: 15px;">          
                   <h3 class="mb-0 text-left text-light" 
                     style="background: linear-gradient(180deg, #BE110E, #630908);
                     border-top-left-radius:15px;

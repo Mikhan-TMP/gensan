@@ -41,10 +41,10 @@
             <div class="d-flex" style="align-items: center; flex-wrap: wrap; gap: 10px">
               <label class="text-dark" style="font-weight: bold;">Area:</label>
                 <div class="">
-                <select class="form-control" name="room">              
-                  <option value="">All</option>
+                <select class="form-control" name="room" style="color: white; background: linear-gradient(180deg, #BE110E, #630908);">                         
+                  <option value="" style="color: black">All</option>
                   <?php foreach ($roomlist as $d) : ?>
-                    <option value="<?= $d['room']; ?>"><?= $d['floor']." : ".$d['room']; ?></option>
+                    <option style="color: black" value="<?= $d['room']; ?>"><?= $d['floor']." : ".$d['room']; ?></option>
                   <?php endforeach; ?>
                 </select>
                 <?= form_error('room', '<small class="text-danger pl-3">', '</small>') ?>

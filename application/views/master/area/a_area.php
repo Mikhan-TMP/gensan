@@ -67,19 +67,19 @@
                     <?= form_error('open_time', '<small class="text-danger">', '</small>') ?>
                   </div>
                   <div class="form-group">
-                    <label for="close_time" class="text-dark" style="font-weight: bold;">close time</label>
+                    <label for="close_time" class="text-dark" style="font-weight: bold;">Closing Time</label>
                     <input type="time" class="form-control form-control-lg" name="close_time" id="close_time"
                     style="border-radius:15px; font-size: 1rem; padding: 25px;">
                     <?= form_error('close_time', '<small class="text-danger">', '</small>') ?>
                   </div>
                   <div class="form-group">
-                    <label for="min_slot" class="text-dark" style="font-weight: bold;">Min reservation hour (1hour ~2hour)</label>
+                    <label for="min_slot" class="text-dark" style="font-weight: bold;">Minimum reservation time (1hour ~ 2hours)</label>
                     <input type="number" class="form-control form-control-lg" name="min_slot" id="min_slot" min="1" max="2"
                     style="border-radius:15px; font-size: 1rem; padding: 25px;" placeholder="Enter Minimum Reservation Hour">
                     <?= form_error('min_slot', '<small class="text-danger">', '</small>') ?>
                   </div>
                   <div class="form-group">
-                    <label for="max_slot"class="text-dark" style="font-weight: bold;">Max reservation hour(1hour ~8hour)</label>
+                    <label for="max_slot"class="text-dark" style="font-weight: bold;">Maximum reservation Time(1hour ~ 8hours)</label>
                     <input type="number" class="form-control form-control-lg" name="max_slot" id="max_slot"min="1" max="8"
                     style="border-radius:15px; font-size: 1rem; padding: 25px;" placeholder="Enter Maximum Reservation Hour">
                     <?= form_error('max_slot', '<small class="text-danger">', '</small><br>') ?>
