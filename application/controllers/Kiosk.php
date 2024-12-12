@@ -492,22 +492,24 @@ class Kiosk extends CI_Controller
     $code_type = $this->input->get("code_type");
     $code = $this->input->get("code");
     
-      if($code_type=='QR'){
+      if($code_type=='QR' || $code_type=='qr') {
           $data  =$this->db->get_where('student', ['qrcode' => $code])->row_array();
-      } else {
-          $data  =$this->db->get_where('student', ['rfid' => $code])->row_array();
+      } 
+      else if ($code_type=='RFID' || $code_type=='rfid')
+      {
+        $data  =$this->db->get_where('student', ['rfid' => $code])->row_array();
       }
       
       if($data == NULL){
-        if($code_type=='QR')
+        if($code_type=='QR' || $code_type=='qr')
           $data  =$this->db->get_where('faculty', ['qrcode' => $code])->row_array();
-        else 
+        else if ($code_type=='RFID' || $code_type=='rfid')
           $data  =$this->db->get_where('faculty', ['rfid' => $code])->row_array();
         
         if($data==NULL){
-          if($code_type=='QR')
+          if($code_type=='QR' || $code_type=='qr')
           $data  =$this->db->get_where('visitor', ['qrcode' => $code])->row_array();
-          else 
+          else if ($code_type=='RFID' || $code_type=='rfid')
           $data  =$this->db->get_where('visitor', ['rfid' => $code])->row_array();
         if($data==NULL)
             $data['category'] ="null";
@@ -758,25 +760,27 @@ public function TapQRPair()
   $code_type = $this->input->get("code_type");
   $code = $this->input->get("code");    
   $kiosk_id = $this->input->get("kiosk_id");
-  $password = $this->input->get("password");
+  // $password = $this->input->get("password");
   
   // $checkPass = $this->db->get_where('student', ['password' => $password])->row_array();
 
   // if($checkPass)
   // {
-    if($code_type == 'QR'){
+    if($code_type == 'QR' || $code_type == 'qr'){
       $data = $this->db->order_by('id', 'desc')->get_where('attend', ['qrcode' => $code,'date'=>$Sdate])->row_array();
-    }else 
-    {
+    }
+    else if ($code_type == 'RFID'|| $code_type == 'rfid'){
       $data  =$this->db->order_by('id', 'desc')->get_where('attend', ['rfid' => $code,'date'=>$Sdate])->row_array();
     }
   
       if($data == NULL)
       {
-        if($code_type=='QR')
+        if($code_type=='QR' || $code_type == 'qr'){
           $data  =$this->db->get_where('student', ['qrcode' => $code])->row_array();
-        else 
+        }
+        else if ($code_type == 'RFID'|| $code_type == 'rfid'){
           $data  =$this->db->get_where('student', ['rfid' => $code])->row_array();
+        }
   
         if($data == NULL)
         {
@@ -795,10 +799,11 @@ public function TapQRPair()
             'in_time' => $date,
             'date' => $Sdate
           );        
-          if($code_type=='QR')
+          if($code_type=='QR' || $code_type == 'qr')
             $data['qrcode'] = $code;
-          else 
+          else if ($code_type == 'RFID' || $code_type == 'rfid')
             $data['RFID'] = $code;
+
           $this->db->insert('attend', $data);
           echo "time in success";
       }
@@ -812,8 +817,8 @@ public function TapQRPair()
           // $queryUpdate = "UPDATE `attend`  SET `kiosk` = '" .$kiosk_id. "'  WHERE  `id` = '$id'";
           $this->db->query($queryUpdate);
           $type = 'stud_timeout';
-          $this->load->model('Notif_model');
-          $this->Notif_model->notifications($type, $data);
+          // $this->load->model('Notif_model');
+          // $this->Notif_model->notifications($type, $data);
           echo "time out success";   
         }
         else
@@ -839,14 +844,14 @@ public function TapQRPair()
             'in_time' => $date,
             'date' => $Sdate
           );        
-          if($code_type=='QR')
+          if($code_type=='QR' || $code_type == 'qr')
             $data['qrcode'] = $code;
-          else 
+          else if ($code_type == 'RFID' || $code_type == 'rfid')
             $data['RFID'] = $code;
           $this->db->insert('attend', $data);
-          $type = 'stud_timein';
-          $this->load->model('Notif_model');
-          $this->Notif_model->notifications($type, $data);
+          // $type = 'stud_timein';
+          // $this->load->model('Notif_model');
+          // $this->Notif_model->notifications($type, $data);
           echo "time in success";
         }
       }   
