@@ -45,6 +45,7 @@
 }
 
 </style>
+<?php $displayedTitles = array(); ?>
 <!-- Sidebar -->
     <!-- <ul class="navbar-nav sidebar sidebar-dark accordion"  -->
     <ul class="navbar-nav sidebar"id="accordionSidebar" style="background-color: white; box-shadow: -12px 0px 17px 2px #000000;z-index: 1;">
@@ -56,13 +57,17 @@
         <p class="text-center mt-2 mb-2 ml-1" style="font-weight: bold; color: #2D3748;">MSU-GENSAN</p>
       </a>
     </div>
+    
       <div class="mt-4">
           <hr id="sidebarDivider" class="sidebar-divider" style="border: 0; height: 1px; background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(228,214,214,1) 30%, rgba(199,193,193,1) 49%, rgba(228,214,214,1) 70%, rgba(255,255,255,1) 100%); margin: 1rem 0; transition: height 0.3s ease-in-out;">
           <!-- <hr class="sidebar-divider collapse" id="sidebarDivider" style="border: 0; height: 1px; background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(228,214,214,1) 30%, rgba(199,193,193,1) 49%, rgba(228,214,214,1) 70%, rgba(255,255,255,1) 100%); margin: 1rem 0;"> -->
+        <p style="font-weight: bold; color: #2D3748; font-size:10px; text-transform: uppercase;">Menu</p>
         <?php
         $role_id = $this->session->userdata('role_id');
         $username = $this->session->userdata('username');
-
+        // echo '<pre>';
+        // print_r($displayedTitles);
+        // echo '<pre>';
         $queryMenu = "SELECT user_menu.id, menu
                         FROM user_menu JOIN user_access
                           ON user_menu.id = user_access.menu_id
@@ -78,7 +83,6 @@
         $skipTitles = ['Room Reservation','Attend Room','Room Status','Room','Reservation Seat', 'Reservation Room', 'Live Monitoring', 'Seat Reservation'];
         // $skipTitles = [''];
         // Initialize an array to keep track of already displayed submenu titles
-        $displayedTitles = [];
         
         foreach ($menu as $menus): ?>
             <!-- <div class="ml-2" style="font-weight: bold; color: #2D3748; font-size:10px; text-transform: uppercase;">

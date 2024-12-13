@@ -1,3 +1,6 @@
+<!-- add spinner when the page loads -->
+
+
 
 <div class="loading" style="display: none; position: fixed; width: 100%; height: 100%; 
     top: 0; left: 0; background: #212121; z-index: 9999; 
@@ -31,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Wait for 3 seconds before reloading the page or submitting the form
             setTimeout(() => {
                 form.submit(); // Submit the form after delay
-            }, 3000); // 3000 ms = 3 seconds
+            }, 2000); // 3000 ms = 3 seconds
         });
     });
 });
@@ -46,26 +49,29 @@ document.addEventListener('DOMContentLoaded', function() {
                   <div class="container-fluid" >
                   <h1 class="h3 mb-4 text-gray-800">Content Management Page</h1>
                   </div>
-                  <hr>
-                  <div class="container-fluid">
-                  <h5>School Announcement</h5>
+                  <!-- <hr> -->
+                  <!-- <div class="container-fluid">
+                     <h5>
+                        School Announcements 
+                        <span class="text-danger" style="font-size: 14px;" id="largeImageCount"><?= $imageCount; ?>/10</span>
+                     </h5>
                      <div class="container-fluid" style="display: flex; justify-content: start;">
                         <div class="btn-toolbar mb-3" role="toolbar" aria-label="Toolbar with button groups"><br>
                            <div>
-                              <button type="button" class="btn btn-dark mt-4" data-toggle="modal" data-target="#imgamodal" style="margin-right: 3px;">
+                           <button type="button" class="btn btn-dark mt-4" id="addLargeImageButton" data-toggle="modal" data-target="#imgamodal" style="margin-right: 3px;">
                               Add Image
-                              </button>
+                           </button>
                            </div>
-                           <!-- MODAL -->
+
                            <div class="modal" id="imgamodal">
                               <div class="modal-dialog">
                                  <div class="modal-content">
-                                    <!-- Modal Header -->
+
                                     <div class="modal-header">
                                        <h4 class="modal-title">Upload Image</h4>
                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
                                     </div>
-                                    <!-- Modal body -->
+
                                     <form action="<?= base_url()?>Admin/do_upload_L" method="post" enctype="multipart/form-data" onsubmit="showLoadingScreen();">
                                        <div class="modal-body">
                                           <div class="btn-toolbar mb-3" role="toolbar" aria-label="Toolbar with button groups" style="display: flex; justify-content: center; align-items: center; margin: 20px;">
@@ -81,9 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                              <img id="frame" src="" class="img-fluid" height="150px"/>
                                           </div>
                                        </div>
-                                       <!-- end Modal body -->
 
-                                       <!-- Modal footer -->
                                        <div class="modal-footer">
                                           <input type="submit" name="Upload" class="btn btn-secondary" id="inputGroupFileAddon03">
                                           <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
@@ -95,7 +99,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                      </div>
 
-                     <!-- SHOW AND DELETE --> 
                      <div class="card shadow-sm p-3 mb-5 bg-body rounded">
                         <div class="card-body">
                            <div class="container-fluid">
@@ -134,7 +137,6 @@ document.addEventListener('DOMContentLoaded', function() {
                                     ?>
 
                                  </div>
-                                 <!-- start Modal -->
                                  <div class="modal" id="<?php echo "vid".$id;?>">
                                     <div class="modal-dialog">
                                        <div class="modal-content" style="width: 1100px; margin-left: -300px;">
@@ -147,25 +149,22 @@ document.addEventListener('DOMContentLoaded', function() {
                                             $i++;
                                             if($i == $id){
                                               ?>  
-                                          <!-- Modal Header -->
+
                                           <div class="modal-header">
                                              <h5 class="modal-title"><?php echo $k ?></h5>
                                              <button type="button" class="close" data-dismiss="modal">&times;</button>
                                           </div>
-                                          <!-- Modal body -->
+
                                           <div class="modal-body d-flex justify-content-center">
                                           <img class="rounded" src="<?php echo base_url($images)."/".$k;?>" id="" style="width: 1000px;" >
                                           </div>
-                                          <!-- Modal footer -->
+
                                           <div class="modal-footer">
                                              <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                                           </div>
-                                          <!-- End modal -->
+
                                           <?php  }
                                           }?>
-                                          
-                                         
-                                          
                                        </div>
                                     </div>
                                  </div>
@@ -173,14 +172,18 @@ document.addEventListener('DOMContentLoaded', function() {
                               </div>
                            </div>
                         </div>
-                     </div>
-                  <hr>
-                  <h5>Librarian Announcement</h5>
+                  </div> -->
+                  <!-- <hr> -->
+
+                     <h5>Librarian Announcement
+                        <span class="text-danger" style="font-size: 14px;" id="smallImageCount"><?= $simageCount; ?>/10</span>
+
+                     </h5>
                      <div class="container-fluid" style="display: flex; justify-content: start;">
                         <div class="btn-toolbar mb-3" role="toolbar" aria-label="Toolbar with button groups"><br>
-                          <button type="button" class="btn btn-dark mt-4" data-toggle="modal" data-target="#uploadImgS" style="margin-right: 3px;">
-                            Add Image
-                          </button>
+                           <button type="button" class="btn btn-dark mt-4" id="addSmallImageButton" data-toggle="modal" data-target="#uploadImgS" style="margin-right: 3px;">
+                              Add Image
+                           </button>
                           <!-- <h4 class="mt-3">Small Images</h4> -->
                         </div>
                         <!-- MODAL -->
@@ -189,7 +192,7 @@ document.addEventListener('DOMContentLoaded', function() {
                               <div class="modal-content">
                                  <!-- Modal Header -->
                                  <div class="modal-header">
-                                    <h4 class="modal-title">Upload Image</h4>
+                                    <h4 class="modal-title">Upload Library Announcement</h4>
                                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                                  </div>
                                  <!-- Modal Body -->
@@ -295,13 +298,15 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>                           
                      </div>
                   <hr>
-                  <h5>Highlights</h5>
+                     <h5>Highlights
+                        <span class="text-danger" style="font-size: 14px;" id="videosCount"><?= $vidCount; ?>/10</span>
+                     </h5>
                         <!-- MODAL -->
                         <div class="container-fluid">
                            <div style="display: flex; justify-content: start;">
                               <div class="btn-toolbar mb-3" role="toolbar" aria-label="Toolbar with button groups">
                                  <div>
-                                    <button type="button" class="btn btn-dark mt-4" data-toggle="modal" data-target="#uploadMod" style="margin-right: 3px;">
+                                    <button type="button" class="btn btn-dark mt-4"  id="addVideoButton" data-toggle="modal" data-target="#uploadMod" style="margin-right: 3px;">
                                     Add Video
                                     </button>
                                  </div>
@@ -391,6 +396,8 @@ document.addEventListener('DOMContentLoaded', function() {
          </div>
       </div>
    </div>
+   </div>
+
          <!-- ALERT MESSAGES -->
          <?php 
         //get the toasterhelper
@@ -548,6 +555,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 }
 </style>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
    function preview() {
@@ -628,3 +636,129 @@ function updateFileName(event) {
    label.textContent = fileName; // Update the label with the file name
 }
 </script>
+
+
+
+
+<script>
+   var imageCount; 
+    // Function to fetch the count and update the UI
+    function updateLargeImageCount() {
+        $.ajax({
+            url: '<?= base_url("admin/getLargeImageCount"); ?>',
+            method: 'GET',
+            success: function(response) {
+                // Parse the JSON response
+                let data = JSON.parse(response);
+                imageCount = data.count;
+                // Update the count in the span
+                $('#largeImageCount').text(imageCount + '/10');
+                
+
+
+                if (imageCount >= 10) {
+                    $('#addLargeImageButton').prop('disabled', true);
+                }
+                // Show SweetAlert if the user tries to open the modal when the limit is reached
+                $('#addLargeImageButton').click(function(e) {
+                    if (imageCount >= 10) {
+                        e.preventDefault();  // Prevent modal from opening
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Maximum Image Limit Reached',
+                            text: 'You can only upload a maximum of 10 images.',
+                            confirmButtonText: 'Okay'
+                        });
+                    }
+                    //close the upload modal
+                    $('#uploadModal').modal('hide');
+                });
+            },
+            error: function() {
+                console.error("Failed to fetch large image count.");
+            }
+        });
+    }
+
+    // Call the function when the page loads
+    $(document).ready(function() {
+        updateLargeImageCount();
+    });
+
+</script>
+
+<script>
+    // Function to fetch the count and update the UI
+    function updateSmallImageCount() {
+        $.ajax({
+            url: '<?= base_url("admin/getSmallImageCount"); ?>',
+            method: 'GET',
+            success: function(response) {
+                // Parse the JSON response
+                let data = JSON.parse(response);
+                if (data && data.count !== undefined) {
+                    var simageCount = data.count;
+
+                    // Update the count in the span
+                    $('#smallImageCount').text(simageCount + '/10');
+                    
+                    // Disable the add button if the count reaches 10
+                    if (simageCount >= 10) {
+                        $('#addSmallImageButton').prop('disabled', true);
+                    } else {
+                        $('#addSmallImageButton').prop('disabled', false);
+                    }
+                } else {
+                    console.error("Invalid data received from the server.");
+                }
+            },
+            error: function() {
+                console.error("Failed to fetch small image count.");
+            }
+        });
+    }
+
+    // Call the function when the page loads
+    $(document).ready(function() {
+        updateSmallImageCount();
+    });
+</script>
+
+<script>
+    // Function to fetch the count and update the UI
+    function updateVideosCount() {
+        $.ajax({
+            url: '<?= base_url("admin/getVideosCount"); ?>',
+            method: 'GET',
+            success: function(response) {
+                // Parse the JSON response
+                let data = JSON.parse(response);
+                if (data && data.count !== undefined) {
+                    var vidCount = data.count;
+
+                    // Update the count in the span
+                    $('#videosCount').text(vidCount + '/10');
+                    
+                    // Disable the add button if the count reaches 10
+                    if (vidCount >= 10) {
+                        $('#addVideoButton').prop('disabled', true);
+                    } else {
+                        $('#addVideoButton').prop('disabled', false);
+                    }
+                } else {
+                    console.error("Invalid data received from the server.");
+                }
+            },
+            error: function() {
+                console.error("Failed to fetch small image count.");
+            }
+        });
+    }
+
+    // Call the function when the page loads
+    $(document).ready(function() {
+        updateVideosCount();
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

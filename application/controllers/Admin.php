@@ -238,6 +238,7 @@ function do_upload_S(){  // small image
   $config['max_height']           = 1080;
 
   $this->load->library('upload', $config);
+  
   if (!$this->upload->do_upload('customFile')) {
       $error = $this->upload->display_errors();
       
@@ -289,5 +290,39 @@ function vid_upload(){ //VIDEO UPLOAD
     }
 }
 
+public function getLargeImageCount(){
+    // Specify the directory
+    $dir = './assets/images_L';
+    
+    // Get all items in the directory
+    $files = array_diff(scandir($dir), ['.', '..']);
+    
+    // Count the remaining items
+    $count = count($files);
+    
+    echo json_encode(['count' => $count]);
+}
+
+public function getSmallImageCount(){
+  $dir = './assets/images_S';
+    
+  // Get all items in the directory
+  $files = array_diff(scandir($dir), ['.', '..']);
   
+  // Count the remaining items
+  $count = count($files);
+  
+  echo json_encode(['count' => $count]);
+}
+public function getVideosCount(){
+  $dir = './assets/videos';
+    
+  // Get all items in the directory
+  $files = array_diff(scandir($dir), ['.', '..']);
+  
+  // Count the remaining items
+  $count = count($files);
+  
+  echo json_encode(['count' => $count]);
+}
 }

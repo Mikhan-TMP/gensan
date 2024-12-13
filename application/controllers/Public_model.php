@@ -302,6 +302,9 @@ class Public_model extends CI_Model
     $e_id = $data['id'];
     $query = "SELECT  users.id AS `id`,
           users.username AS `name`,
+          users.email AS `email`,
+          users.fname AS `fname`,
+          users.lname AS `lname`,
           users.image AS `image`
       FROM  users
       WHERE  username = '$username'";
