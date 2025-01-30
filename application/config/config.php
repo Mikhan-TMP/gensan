@@ -36,6 +36,11 @@ $config['base_url'] = 'http://localhost/gensan/';
 | variable so that it is blank.
 |
 */
+
+$config['api_key'] = '12ec2039-45db-4bb7-9022-aca057c60ccb';
+$config['api_key_nams'] = '243301c0-cfb3-4fcf-9e66-2c38d3d6d0e3';
+
+
 $config['index_page'] = '';
 
 /*
@@ -522,3 +527,18 @@ $config['rewrite_short_tags'] = FALSE;
 | Array:		array('10.0.1.200', '192.168.5.0/24')
 */
 $config['proxy_ips'] = '';
+/*
+|--------------------------------------------------------------------------
+| API CONFIGURATIONS
+|--------------------------------------------------------------------------
+|
+| This configuration is for importing data from the existing Enrollment System
+| thru an API. This is a temporary solution until the new Enrollment System
+| is fully developed and implemented.
+|
+*/
+$config['api_endpoint'] = 'https://api.sandbox.centralizedinc.com/management/v1.0/integrations/students';
+$config['auth_url'] = 'https://api.sandbox.centralizedinc.com/iam/v1.0/integrations/auth';
+
+$config['username'] =  'psbd_1';
+$config['password'] =  's4FhJ3ZPRK62X8K';

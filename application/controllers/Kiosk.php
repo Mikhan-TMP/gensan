@@ -203,13 +203,14 @@ class Kiosk extends CI_Controller
       'out_status' => 'late-exit',
       'out_time' => $end_time_equi]);
   }
-  public function CancelBook()
+  public function CancelBookOld()
   {
     date_default_timezone_set('Asia/Manila');
 
     // $code =  $this->input->get("code");      
     $book_id =  $this->input->get("book_id");        
-
+    
+    //get the booking details from booking database.
     $this->db->where('id', $book_id);
     $this->db->where('in_time IS NULL');
     $this->db->where('out_time IS NULL');
@@ -221,6 +222,8 @@ class Kiosk extends CI_Controller
       return;
     }
     // $book_id = $data['id'];
+
+    //extract the start_time_index and end_time_index.
     $start_time_index  = $data['start_time'];
     $end_time_index = $data['end_time'];
 
@@ -232,6 +235,8 @@ class Kiosk extends CI_Controller
     $open_time = strtotime($area_info['opentime']);
     $close_time = strtotime($area_info['closetime']);
     $timesIndex = array();
+
+    
     $counter = 0; // Initialize counter
     for ($time = $open_time; $time <= $close_time; $time = strtotime('+1 hour', $time)) {
       $timesIndex[$counter] = date('H:i', $time);
@@ -260,6 +265,97 @@ class Kiosk extends CI_Controller
       $status = 0;
     }
     $slot_status = '['. implode(',', $slot_status). ']';
+    // echo $slot_status;
+    //apply
+    $this->db->where('Floor', $area_floor);
+    $this->db->where('Room', $area_name);
+    $this->db->where('Slot', $seat_slot);
+    $this->db->where('date', $booking_date);
+    $this->db->update('slot', ['status' => $slot_status]);
+    //update the booking table with the out_time and out_status.
+    $this->db->where('id', $book_id);
+    $this->db->update('booking', [
+      'in_time' => date('H:i:s'),
+      'in_status' => 'cancelled',
+      'out_status' => 'cancelled', 
+      // 'in_status' => 'occupied',
+      // 'out_status' => 'exit',
+      'out_time' => date('H:i:s')]);
+    
+    echo "successfully cancelled";
+
+  }
+
+
+  public function CancelBook()
+  {
+    date_default_timezone_set('Asia/Manila');
+
+    // $code =  $this->input->get("code");      
+    $book_id =  $this->input->get("book_id");        
+    
+    //get the booking details from booking database.
+    $this->db->where('id', $book_id);
+    $this->db->where('in_time IS NULL');
+    $this->db->where('out_time IS NULL');
+    $this->db->order_by('id', 'DESC'); 
+    $this->db->limit(1); 
+    $data  = $this->db->get('booking')->row_array();
+    if(!$data){
+      echo ("No Data.");
+      return;
+    }
+    // $book_id = $data['id'];
+
+    //extract the start_time_index and end_time_index.
+    $start_time_index  = $data['start_time'];
+    $end_time_index = $data['end_time'];
+    // echo $start_time_index." ".$end_time_index;
+
+    $area_floor = $data['floor'];
+    $area_name = $data['room'];
+    $seat_slot = $data['slot_id'];
+    $booking_date = $data['date'];
+    $area_info = $this->db->get_where('area', array('floor' => $area_floor, 'room' => $area_name, ))->row_array();
+    $open_time = strtotime($area_info['opentime']);
+    $close_time = strtotime($area_info['closetime']);
+    $timesIndex = array();
+
+    
+    $counter = 0; // Initialize counter
+    for ($time = $open_time; $time <= $close_time; $time = strtotime('+1 hour', $time)) {
+      $timesIndex[$counter] = date('H:i', $time);
+      $counter++;
+    }
+    $start_time = $timesIndex[$start_time_index];
+    $end_time = $timesIndex[$end_time_index];
+    $current_date = date('Y-m-d');
+    $slots_data = $this->db->get_where('slot', [
+      'Floor' => $area_floor,
+      'Room' => $area_name,
+      'Slot' => $seat_slot,
+      'date' => $booking_date
+    ])->row_array();
+    if (!$slots_data) {
+      echo "No slot record";
+      return;
+    }
+    $slot_status = $slots_data['status'];
+    // echo $slot_status;
+
+
+    $slot_status = substr($slot_status, 1, -1);
+    $slot_status = explode(',', $slot_status);
+
+    //now that slot status is an array, change the value of the index to 0, starting from start_index to endtime_index
+    for ($i = $start_time_index; $i < $end_time_index; $i++) {
+      $slot_status[$i] = 0;
+    }
+    // foreach ($slot_status as &$status) {
+    //   $status = 0;
+    // }
+    $slot_status = '['. implode(',', $slot_status). ']';
+
     // echo $slot_status;
     //apply
     $this->db->where('Floor', $area_floor);

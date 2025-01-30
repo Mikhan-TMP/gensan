@@ -33,7 +33,7 @@ class Profile extends CI_Controller
         // Handle the blob data
         $defaultAvatar = base_url('images/default-avatar.jpg');
         $imageSrc = $defaultAvatar; // Default to avatar
-        if (!empty($imageData)) {
+        if (!empty($imageData['image'])) {
             $imageBlob = $imageData['image']; // Adjust the key based on your database column
             $imageType = 'image/jpeg'; // Adjust to the correct MIME type
             $imageSrc = 'data:' . $imageType . ';base64,' . base64_encode($imageBlob);

@@ -152,6 +152,12 @@
                       </span>
                       <span class="text">Excel Import</span>
                 </button>
+                <button id="ImportDatabase" type="button" class="btn btn-secondary btn-icon-split mb-4 shadow-sm">
+                  <span class="icon text-white-600">
+                    <i class="fas fa-file-export"></i>
+                  </span>
+                  <span class="text">Import Data</span>
+                </button>
                 <!-- <button type="button" class="btn btn-secondary btn-icon-split mb-4 shadow-sm" data-toggle="modal" data-target=".bd-example-modal-xl-export">
                   <span class="icon text-white-600">
                     <i class="fas fa-file-export"></i>
@@ -164,6 +170,7 @@
                   </span>
                   <span class="text">Excel Export</span>
                 </button>
+
               </div>
             </div>
           </div>
@@ -255,6 +262,7 @@
                         </form>
                       </div>
                     </div>
+
                     
                     <!-- Modal Footer -->
                     <div class="modal-footer" style="border-top: none;">
@@ -264,7 +272,6 @@
                   </div>
                 </div>
               </div>
-
           <!-- Modal for Exporting Students to Excel -->
           <div class="modal fade bd-example-modal-xl-export" tabindex="-1" role="dialog" aria-labelledby="exportModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-xl">
@@ -316,7 +323,9 @@
               </div>
             </div>
           </div>
-                  
+          
+
+
                     
                     <!-- Modal Body -->
                                 
@@ -684,6 +693,38 @@ $(document).ready(function(){
 });
 </script>
 
+<script>
+    $(document).ready(function() {
+        $('#ImportDatabase').on('click', function() {
+            Swal.fire({
+                title: 'Import Database',
+                text: 'Are you sure you want to import student data from the Enrollment System?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, import it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    //go to master controller.
+                    window.location.href = "<?= base_url('master/import_database') ?>";
+                    Swal.fire({
+                        title: 'Import Started!',
+                        text: 'The database import process has begun.',
+                        icon: 'success',
+                        showCancelButton: false,
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        onBeforeOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                }
+            });
+        });
+    });
+</script>
 <script>
 $(document).ready(function () {
     // Populate College and Year dropdowns

@@ -2999,6 +2999,130 @@ public function markAllAsRead() {
     }
   }
 
+  public function import_database(){
+    // API endpoint
+    $url = $this->config->item('api_endpoint');
+    $token = $this->HttpGetTokenFromGensan();
+        if (!$token) {
+            $response = [
+                'status' => 401,
+                'message' => 'Unauthorized: Failed to get token.'
+            ];
+            $this->output
+                ->set_content_type('application/json')
+                ->set_status_header(401)
+                ->set_output(json_encode($response));
+            return;
+        }
+
+    // Initialize cURL
+    $ch = curl_init($url);
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HTTPHEADER => [
+            'Authorization: Bearer ' . $token,
+            'Content-Type: application/json'
+        ]
+    ]);
+    
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE); // Get the HTTP response code
+    if (curl_errno($ch)) {
+      $error = curl_error($ch);
+      curl_close($ch);
+      echo 'Error: ' . $error;
+      return;
+    }
+    curl_close($ch);
+
+    $data = json_decode($response, true);
+
+    if ( !$data) {
+      echo 'Failed to fetch data. HTTP Code: ' . $httpCode;
+      return;
+    }
+    // echo "<pre>";
+    // print_r($data);
+    // echo "<pre>";
+    // print_r($data['data']['rows']) ; 
+    $studentCounter = 0;
+    $addCounter = 0;
+    $editCounter = 0;
+    foreach ($data['data']['rows'] as $student) {
+        $studentCounter++;
+        // Check if srcode or rfid already exists
+        $this->db->where('srcode', $student['id_number']);
+        // $this->db->or_where('rfid', $student['rfid']);
+        $existing_student = $this->db->get('student')->row_array();
+
+
+
+        $data = [
+          'first_name' => $student['first_name'],
+          'middle_name' => $student['middle_name'],
+          'last_name' => $student['last_name'],
+          'srcode' => $student['id_number'],
+          // 'college' => $student['department'],
+          'college' => $student['college'],
+          'rfid' => $student['rfid']
+        ];
+
+        if ($existing_student) {
+          $editCounter++;
+          $this->db->where('srcode', $student['id_number']);
+          $this->db->update('student', $data);
+          continue;
+        }
+
+        // Insert data into the database
+        if (!$this->db->insert('student', $data)) {
+          $this->session->set_flashdata('student_fail', 'Error inserting student to the database.');
+          return;
+        }else{
+          $addCounter++;
+        }
+      }
+
+      // $this->session->set_flashdata('student_scs', 'Students succesfully imported from the Enrollment System\'s database.');
+      $this->session->set_flashdata('student_scs', "Succesfully imported $studentCounter student records, added $addCounter new student records and updated $editCounter existing student records");
+      redirect('master/student');
+    }
+
+    public function HttpGetTokenFromGensan(){
+      $authURL = $this->config->item('auth_url');
+      $postData = [
+        "username" => $this->config->item('username'),
+        "secret" => $this->config->item('password')
+      ];
+      $ch = curl_init($authURL);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postData));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/json'
+        ]);
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        if (curl_errno($ch)) {
+            $error = curl_error($ch);
+            curl_close($ch);
+            echo 'Error: ' . $error;
+            return;
+        }
+
+        curl_close($ch);
+
+        if ($httpCode == 200) {
+            $data = json_decode($response, true);
+            $token = $data['data']['token'];
+
+            return $token;
+        } else {
+            echo 'Failed to authenticate. HTTP Code: ' . $httpCode;
+        }
+    }
 
 
 
