@@ -103,10 +103,15 @@ class Public_model extends CI_Model
                 attend.in_time,
                 attend.date,
                 student.first_name AS 'fname',
-                student.last_name AS 'lname'    
+                student.last_name AS 'lname',
+                faculty.first_name,
+                faculty.last_name
     FROM  attend
     INNER JOIN  student
     ON  attend.srcode = student.srcode
+    INNER JOIN  faculty
+    ON  attend.srcode = faculty.srcode
+    
     WHERE  1 
     ORDER BY attend.date DESC 
     LIMIT  200";
@@ -166,10 +171,19 @@ class Public_model extends CI_Model
       attend.date,
       student.college AS 'college',
       student.course AS 'course',
-      student.gender AS 'gender'    
+      student.gender AS 'gender',
+      faculty.course AS 'f_course',
+      visitor.rfid AS 'v_rfid',
+      faculty.rfid AS 'f_rfid',
+      student.rfid AS 's_rfid',
+      visitor.id AS 'visitor_id'
       FROM  attend
-      INNER JOIN  student
+      LEFT JOIN  student
       ON  attend.srcode = student.srcode
+      LEFT JOIN  faculty
+      ON  attend.srcode = faculty.srcode
+      LEFT JOIN  visitor
+      ON attend.rfid = visitor.rfid
       WHERE  1
       ORDER BY  `date` DESC";
 
@@ -483,24 +497,42 @@ class Public_model extends CI_Model
 
   public function get_book_all()
   {
-       
     $query = "SELECT  booking.code, 
-                student.first_name AS 'fname',
-                student.last_name AS 'lname', 
-                booking.id AS 'id',   
-                booking.floor, 
-                booking.room, 
-                booking.slot_id, 
-                booking.date,
-                booking.in_status,
-                booking.out_status,
-                booking.start_time,
-                booking.end_time,
-                booking.in_time,
-                booking.out_time
+                  -- student Info
+                  student.first_name AS 'fname',
+                  student.last_name AS 'lname', 
+                  student.srcode,
+                  student.qrcode,
+                  student.rfid,
+                  -- faculty Info
+                  faculty.first_name AS 'f_fname',
+                  faculty.last_name AS 'f_lname',
+                  faculty.srcode AS 'f_srcode',
+                  faculty.qrcode AS 'f_qrcode',
+                  faculty.rfid AS 'f_rfid',
+                  -- visitor Info
+                  visitor.name AS 'v_name',
+                  visitor.qrcode AS 'v_qrcode',
+                  visitor.rfid AS 'v_rfid',
+                  -- booking Info
+                  booking.id AS 'id',   
+                  booking.floor, 
+                  booking.room, 
+                  booking.slot_id, 
+                  booking.date,
+                  booking.in_status,
+                  booking.out_status,
+                  booking.start_time,
+                  booking.end_time,
+                  booking.in_time,
+                  booking.out_time
     FROM  booking
-    INNER JOIN  student
-    ON  booking.code = student.rfid OR booking.code = student.qrcode
+    LEFT JOIN  student
+      ON  booking.code = student.rfid OR booking.code = student.qrcode
+    LEFT JOIN  faculty
+      ON  booking.code = faculty.rfid OR booking.code = faculty.qrcode
+    LEFT JOIN  visitor
+      ON booking.code = visitor.rfid
     WHERE  1 
     ORDER BY booking.date DESC 
     LIMIT  400 ";

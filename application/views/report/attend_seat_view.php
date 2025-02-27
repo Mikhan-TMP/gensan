@@ -116,6 +116,26 @@
                               <input type="date" class="form-control" id="to_date" name="to_date">
                             </div>
                           </div>
+                          <div class="form-group">
+                            <label for="reason">Reason for Cancellation</label>
+                            <select class="form-control" id="reason" name="reason">
+                              <option selected value="">Select Reason</option>
+                              <option value="Area Unavailable">Area Unavailable</option>
+                              <option value="others">Others</option>
+                            </select>
+                            <div class="mt-3" style="display: none;" id="others-reason-div">
+                              <input type="text" id="other-reason" name="other-reason" class="form-control" placeholder="Please specify reason">
+                            </div>
+                          </div>
+                          <script>
+                            $('#reason').on('change', function(e) {
+                              if (this.value == 'others') {
+                                $('#others-reason-div').show();
+                              } else {
+                                $('#others-reason-div').hide();
+                              }
+                            });
+                          </script>
                         </form>
                       </div>
                       <div class="modal-footer">
@@ -251,7 +271,19 @@
                       ?>
                     </td>
                     <td><?= $atd['slot_id']; ?></td>  
-                    <td><?= $atd['fname']." ".$atd['lname']; ?></td>
+                    <td>
+                      <?php 
+                          if (isset($atd['fname'], $atd['lname'])) {
+                              echo $atd['fname'] . " " . $atd['lname'];
+                          } elseif (isset($atd['f_fname'], $atd['f_lname'])) {
+                              echo $atd['f_fname'] . " " . $atd['f_lname'];
+                          } elseif (isset($atd['v_name'])) {
+                              echo $atd['v_name'];
+                          } else {
+                              echo "No Information";
+                          }
+                      ?>
+                  </td>
                     <?php if($atd['in_time']==NULL){
                     } 
                     ?>
@@ -535,6 +567,9 @@ $this->session->unset_userdata('warning');
     var to_date = $('#to_date').val();
     var room = $('#room').val();
     var cancel = $('#cancel').val();
+    var reason = $('#reason').val();
+    var otherreason = $('#other-reason').val();
+
 
     if (cancel == 'specific' && (from_date == '' || to_date == '')) {
       Swal.fire(
@@ -545,7 +580,24 @@ $this->session->unset_userdata('warning');
       return false;
     }
 
-    console.log("HERE!");
+    if (reason == '') {
+      Swal.fire(
+        'Error',
+        'Please select a reason',
+        'error'
+      );
+      return false;
+    }
+
+
+    if (reason == 'others' && otherreason == '') {
+      Swal.fire(
+        'Error',
+        'Please enter a reason',
+        'error'
+      );
+      return false;
+    }
 
     Swal.fire({
       title: 'Are you sure?',
@@ -575,7 +627,9 @@ $this->session->unset_userdata('warning');
                 to_date: to_date,
                 room: room,
                 cancel: cancel,
-                password: result.value
+                password: result.value,
+                reason: reason,
+                other_reason: otherreason
               },
               success: function(response) {
                 console.log("HERE!");

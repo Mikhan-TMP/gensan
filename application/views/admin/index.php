@@ -267,7 +267,7 @@
                <div class="card shadow mb-4">
                  <!-- Card Header - Dropdown -->
                  <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-dark"  style="background: linear-gradient(180deg, #BE110E, #630908);">
-                   <h6 class="m-0 font-weight-bold text-secondary text-light">Daily Reservation Status </h6>
+                   <h6 class="m-0 font-weight-bold text-secondary text-light">Daily Reservation Count </h6>
                  </div>
                  <!-- Card Body -->                 
                  <div class="card-body" style="max-height: 400px; overflow: scroll; overflow-x : hidden;">
@@ -307,7 +307,7 @@
                <div class="card shadow mb-4">
                  <!-- Card Header - Dropdown -->
                  <div class="card-header py-3 d-flex flex-rowz align-items-center justify-content-between text-light" style="background: linear-gradient(180deg, #BE110E, #630908);">
-                   <h6 class="m-0 font-weight-bold text-secondary text-light">Daily Attendance Status</h6>                   
+                   <h6 class="m-0 font-weight-bold text-secondary text-light">Daily Attendance Count</h6>                   
                  </div>
                  <!-- Card Body -->
                  <div class="card-body" style="max-height: 400px; overflow: scroll; overflow-x : hidden;">

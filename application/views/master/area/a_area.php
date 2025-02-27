@@ -51,36 +51,38 @@
                   <div class="form-group">
                     <label for="d_name" class="text-dark" style="font-weight: bold;">Name</label>
                     <input type="text" minlength="2" maxlength="30" class="form-control form-control-lg" name="d_name" id="d_name"
-                    style="border-radius:15px; font-size: 1rem; padding: 25px;" placeholder="Enter Area Name">
+                    style="border-radius:15px; font-size: 1rem; padding: 25px;" placeholder="Enter Area Name"
+                    value="<?= set_value('d_name'); ?>">
                     <?= form_error('d_name', '<small class="text-danger">', '</small>') ?>
                   </div>
                   <div class="form-group">
                     <label for="d_seat" class="text-dark" style="font-weight: bold;">Number of Seat/s</label>
                     <input type="number" min="1" class="form-control form-control-lg" name="d_seat" id="d_seat"
-                    style="border-radius:15px; font-size: 1rem; padding: 25px;" placeholder="Enter Number of Seat/s">
+                    style="border-radius:15px; font-size: 1rem; padding: 25px;" placeholder="Enter Number of Seat/s"
+                    value="<?= set_value('d_seat'); ?>">
                     <?= form_error('d_seat', '<small class="text-danger">', '</small>') ?>
                   </div>
                   <div class="form-group">
                     <label for="open_time" class="text-dark" style="font-weight: bold;">Opening Time</label>
-                    <input type="time" class="form-control form-control-lg" name="open_time" id="open_time"
+                    <input type="time" class="form-control form-control-lg" name="open_time" id="open_time" value="08:00"
                     style="border-radius:15px; font-size: 1rem; padding: 25px;">
                     <?= form_error('open_time', '<small class="text-danger">', '</small>') ?>
                   </div>
                   <div class="form-group">
                     <label for="close_time" class="text-dark" style="font-weight: bold;">Closing Time</label>
-                    <input type="time" class="form-control form-control-lg" name="close_time" id="close_time"
+                    <input type="time" class="form-control form-control-lg" name="close_time" id="close_time" value="17:00"
                     style="border-radius:15px; font-size: 1rem; padding: 25px;">
                     <?= form_error('close_time', '<small class="text-danger">', '</small>') ?>
                   </div>
                   <div class="form-group">
                     <label for="min_slot" class="text-dark" style="font-weight: bold;">Minimum reservation time (1hour ~ 2hours)</label>
-                    <input type="number" class="form-control form-control-lg" name="min_slot" id="min_slot" min="1" max="2"
+                    <input type="number" class="form-control form-control-lg" name="min_slot" id="min_slot" min="1" max="2" value = '1'
                     style="border-radius:15px; font-size: 1rem; padding: 25px;" placeholder="Enter Minimum Reservation Hour">
                     <?= form_error('min_slot', '<small class="text-danger">', '</small>') ?>
                   </div>
                   <div class="form-group">
-                    <label for="max_slot"class="text-dark" style="font-weight: bold;">Maximum reservation Time(1hour ~ 8hours)</label>
-                    <input type="number" class="form-control form-control-lg" name="max_slot" id="max_slot"min="1" max="8"
+                    <label for="max_slot"class="text-dark" style="font-weight: bold;">Maximum reservation time(1hour ~ 8hours)</label>
+                    <input type="number" class="form-control form-control-lg" name="max_slot" id="max_slot"min="1" max="8" value = '4'
                     style="border-radius:15px; font-size: 1rem; padding: 25px;" placeholder="Enter Maximum Reservation Hour">
                     <?= form_error('max_slot', '<small class="text-danger">', '</small><br>') ?>
                   </div>

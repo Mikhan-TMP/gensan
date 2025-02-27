@@ -4,7 +4,22 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Notif_model extends CI_Model {
     public function notifications($type, $data){
         date_default_timezone_set('Asia/Manila');
-      
+        if ($type === 'cancel all booking'){
+          if($data['area'] != 'All'){
+            $notificationData = [
+              'message' => 'All of the Bookings in Area: ' . $data['area']. ' for the date: ' . $data['date'] . ' were cancelled. Reason: ' . $data['reason'], 
+              'type'    => $type, 
+              'created_at' => date('Y-m-d H:i:s'),
+            ];
+          }
+          else{
+            $notificationData = [
+              'message' => 'All of the Bookings for the date: ' . $data['date'] . ' were cancelled. Reason: ' . $data['reason'], 
+              'type'    => $type, 
+              'created_at' => date('Y-m-d H:i:s'),
+            ];
+          }
+        }
         if ($type === 'add student'){
           $notificationData = [
             'message' => 'Student ' . $data['srcode'] . ' was added to the database.', 

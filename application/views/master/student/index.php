@@ -121,7 +121,31 @@
 }
 
 </style>
-
+<style>
+  .eyeBtn {
+    width: 35px;
+    height: 35px;
+    border-radius: 10px;
+    background-color: rgb(50, 50, 50);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+  }
+  .eyeBtn:hover {
+    background-color: rgb(80, 80, 80);
+  }
+  .eye-icon {
+    height: 20px;
+    fill: white;
+    transition: all 0.3s;
+  }
+  .eyeBtn:hover .eye-icon {
+    transform: scale(1.1);
+  }
+</style>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js">
 </script>
       
@@ -154,7 +178,7 @@
                 </button>
                 <button id="ImportDatabase" type="button" class="btn btn-secondary btn-icon-split mb-4 shadow-sm">
                   <span class="icon text-white-600">
-                    <i class="fas fa-file-export"></i>
+                    <i class="fas fa-database"></i>
                   </span>
                   <span class="text">Import Data</span>
                 </button>
@@ -378,7 +402,7 @@
                   <th scope="col">College</th>
                   <th scope="col">Course</th>
                   <th scope="col">Year</th>
-                  <!-- <th scope="col">PIN</th>                       -->
+                  <!-- <th scope="col">PIN</th>-->
                   <th scope="col">QR</th>
                   <th scope="col">RFID</th>
                   <!-- th>IMAGE</th>
@@ -407,11 +431,19 @@
                     <td class=" align-middle"><?= $emp['course']; ?></td>
                     <td class=" align-middle"><?= $emp['schoolyear']; ?></td>
                     <!-- <td class=" align-middle"><?= $emp['pin']; ?></td> -->
-                    <td class=" align-middle"><?= $emp['qrcode']; ?></td>
-                    <td class=" align-middle"><?= $emp['rfid']; ?></td>
+                    <td class=" align-middle"><span class="asterisk" data-value="<?= $emp['qrcode']; ?>"><?= $emp['qrcode'] ? '********' : '-'; ?></span></td>
+                    <td class=" align-middle"><span class="asterisk" data-value="<?= $emp['rfid']; ?>"><?= $emp['rfid'] ? '********' : '-'; ?></span></td>
+
+
                     <!-- td class="text-center"><img src="<?= base_url('images/pp/') . $emp['image']; ?>" style="width: 55px; height:55px" class="img-rounded"></td>
                     <td class=" align-middle"><?= $emp['building']; ?></td -->
                     <td class="text-center align-middle" style="display: flex; align-items: center; gap: 10px">
+                      <!-- Reveal -->
+                      <button class="eyeBtn" onclick="toggleVisibility(this)" <?php if (empty($emp['rfid']) && empty($emp['qrcode'])) : ?> disabled <?php endif; ?>>
+                        <svg class="eye-icon" viewBox="0 0 24 24">
+                          <path fill="white" d="M12 4.5C7.5 4.5 3.73 7.61 2 12c1.73 4.39 5.5 7.5 10 7.5s8.27-3.11 10-7.5c-1.73-4.39-5.5-7.5-10-7.5zm0 12c-2.5 0-4.5-2-4.5-4.5S9.5 7.5 12 7.5 16.5 9.5 16.5 12 14.5 16.5 12 16.5zm0-7.5c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"></path>
+                        </svg>
+                      </button>
                       <a class="editBtn" href="<?= base_url('master/e_student/') . $emp['id'] ?>" style="text-decoration: none" tooltip="Edit">
                         <!-- edit -->
                         <svg height="1em" viewBox="0 0 512 512">
@@ -491,6 +523,26 @@ function confirmDelete(id) {
     })
 }
 </script>
+
+<script>
+  function toggleVisibility(btn) {
+    // Get the parent row of the clicked button
+    const row = btn.closest("tr");
+
+    // Find the QR and RFID elements within the same row
+    const spans = row.querySelectorAll(".asterisk");
+
+    spans.forEach(span => {
+      if (span.textContent === "********") {
+        span.textContent = span.getAttribute("data-value");
+      } else {
+        span.textContent = "********";
+      }
+    });
+  }
+</script>
+
+
 
 <script>
 // document.addEventListener("DOMContentLoaded", function () {

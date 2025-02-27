@@ -1326,7 +1326,7 @@ public function users()
 
   public function visitor()
   {    
-    $d['title'] = 'Visitor';
+    $d['title'] = 'Visitors';
     
     $d['visitor'] = $this->db->get('visitor')->result_array();
     $d['account'] = $this->Admin_model->getAdmin($this->session->userdata['username']);
@@ -1341,11 +1341,12 @@ public function users()
   public function a_visitor()
     {
       // Add Department
-      $d['title'] = 'Visitor';
+      $d['title'] = 'Visitors';
       $d['account'] = $this->Admin_model->getAdmin($this->session->userdata['username']);
       // Form Validation
       $this->form_validation->set_rules('e_id', 'visitor ID', 'required|trim');
       $this->form_validation->set_rules('qrcode', 'QR code', 'required|trim');
+      $this->form_validation->set_rules('rfid', 'RFID', 'required|trim');
   
       if ($this->form_validation->run() == false) {
         $this->load->view('templates/header', $d);
@@ -1360,40 +1361,39 @@ public function users()
   public function add_visitor()
   {
     $this->form_validation->set_rules('e_name', 'visitor name', 'required|trim');
-    $this->form_validation->set_rules('qrcode', 'QR code', 'required|trim');
+    // $this->form_validation->set_rules('qrcode', 'QR code', 'required|trim');
     if ($this->form_validation->run() == false) {
-      $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">
-      empty data !</div>');
+      $this->session->set_flashdata('error', 'ERROR');
       redirect('master/visitor');
     }
     else{     
       $data = [
         'name' => $this->input->post('e_name'),
-        'qrcode' => $this->input->post('qrcode'),
+        // 'qrcode' => $this->input->post('qrcode'),
         'rfid' => $this->input->post('rfid'),
         'gender' => $this->input->post('gender')        
       ];
-      print_r($data);      
+      // print_r($data);      
       $this->db->insert('visitor', $data);
       $rows = $this->db->affected_rows();
       if ($rows > 0) {
-        $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">
-          Successfully added a new visitor!</div>');
+        $this->session->set_flashdata('success', 'Successfully added new visitor.');
       } else {
-        $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">
-          Failed to add data!</div>');
+        $this->session->set_flashdata('error', 'Failed to add new visitor.');
       }
       redirect('master/visitor');
     }
   }
   public function e_visitor($e_id)
   {
-    $d['title'] = 'Visitor';
+    $d['title'] = 'Visitors';
     $d['account'] = $this->Admin_model->getAdmin($this->session->userdata['username']);   
     $d['visitor'] = $this->db->get_where('visitor', ['id' => $e_id])->row_array();
-    
+
+    $this->form_validation->set_rules('rfid', 'RFID', 'required|trim');
     $this->form_validation->set_rules('e_name', 'name', 'required|trim');    
-    $this->form_validation->set_rules('qrcode', 'qr code ', 'required|trim');
+    
+    // $this->form_validation->set_rules('qrcode', 'qr code ', 'required|trim');
     
 
     $this->load->view('templates/header', $d);
@@ -1409,7 +1409,7 @@ public function users()
     $e_id = $this->input->post('e_id');   
     $data = [
       'name' => $this->input->post('e_name'),            
-      'gender' => $this->input->post('e_gender'),
+      // 'gender' => $this->input->post('e_gender'),
       'qrcode' => $this->input->post('qrcode'),
       'rfid' => $this->input->post('rfid')      
     ];
@@ -1417,19 +1417,16 @@ public function users()
     $this->db->update('visitor', $data, ['id' => $e_id]);
     $rows = $this->db->affected_rows();
     if ($rows > 0) {
-      $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">
-        Successfully update a new visitor!</div>');
+      $this->session->set_flashdata('success', 'Successfully updated a visitor!');
     } else {
-      $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">
-        Failed to update data!</div>');
+      $this->session->set_flashdata('error', 'Failed to update a visitor!');
     }
     redirect('master/visitor');
   }
   public function d_visitor($e_id)
   {
     $this->db->delete('visitor', ['id' => $e_id]);
-    $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">
-        Successfully deleted an visitor!</div>');
+    $this->session->set_flashdata('success', 'Successfully deleted a visitor!');
     redirect('master/visitor');
   }
   public function ban_list()
@@ -1746,6 +1743,9 @@ public function markAllAsRead() {
   }
 }
 
+public function HttpGetNotifications(){
+
+}
 
     /************************ department   ************************************
     public function a_dept()
@@ -1969,14 +1969,18 @@ public function markAllAsRead() {
     $book_id = $this->input->get('book_id');
     $start_time = $this->input->get('start');
     $end_time = $this->input->get('end');
+    // $reason = $this->input->get('reason');
+    // if ($reason === "others") {
+    //   $reason =  $this->input->get('other-reason');
+    // } else if (empty($reason)) {
+    //   $reason = "No Reason";
+    // }
 
     $start_time_format = date('H:i', strtotime($start_time));
     $end_time_format = date('H:i', strtotime($end_time));
-    // print_r($end_time_format);
+
     $data  =$this->db->get_where('booking', ['id' => $book_id])->row_array();
-    // echo "<pre>";
-    //   print_r($data);
-    // echo "<pre>";
+
     $data_date_format = date('Y-m-d', strtotime(trim($data['date'])));
     $current_date_format = date('Y-m-d', strtotime(trim($current_date)));
     if(!$data){
@@ -1994,8 +1998,7 @@ public function markAllAsRead() {
           $this->db->update('booking', [
             'in_status' => 'cancelled',
             'out_status' => 'cancelled', 
-            // 'in_status' => 'occupied',
-            // 'out_status' => 'exit',
+            // 'reason' => $reason,
             'in_time' => $start_time_format, 
             'out_time' => $end_time_format]);
           $this->session->set_flashdata('success', 'Booking Succesfully Cancelled.');
@@ -2067,18 +2070,6 @@ public function markAllAsRead() {
                     $this->db->where('Slot', $area_info_seat);
                     $this->db->where('date', $area_info_date);
 
-                    // echo "<br>";
-                    // echo $area_info_floor;
-                    // echo "<br>";
-                    // echo $area_info_room;
-                    // echo "<br>";
-                    // echo $area_info_date;
-                    // echo "<br>";
-                    // echo $area_info_seat;
-                    // echo "<br>";
-                    // echo "After: " ;
-                    // print_r($slots_data['status']);
-                    // echo "<br>";
 
                     // Convert the array back to the string format
                     $updated_slots = implode(',', $slots_data['status']);
@@ -2090,10 +2081,9 @@ public function markAllAsRead() {
                     $this->db->where('id', $book_id);
                     $this->db->update('booking', [
                       'in_status' => 'cancelled',
-                      'out_status' => 'cancelled', 
-                      // 'in_status' => 'occupied',
-                      // 'out_status' => 'exit',
-                      'in_time' => $start_time_format, 
+                      'out_status' => 'cancelled',
+                      // 'reason' => $reason,
+                      'in_time' => $start_time_format,
                       'out_time' => $end_time_format]);
                     $this->session->set_flashdata('success', 'Booking Successfully Cancelled.');
                     redirect('report/attend_seat');
@@ -2177,18 +2167,6 @@ public function markAllAsRead() {
                       $this->db->where('Slot', $area_info_seat);
                       $this->db->where('date', $area_info_date);
   
-                      // echo "<br>";
-                      // echo $area_info_floor;
-                      // echo "<br>";
-                      // echo $area_info_room;
-                      // echo "<br>";
-                      // echo $area_info_date;
-                      // echo "<br>";
-                      // echo $area_info_seat;
-                      // echo "<br>";
-                      // echo "After: " ;
-                      // print_r($slots_data['status']);
-                      // echo "<br>";
   
                       // Convert the array back to the string format
                       $updated_slots = implode(',', $slots_data['status']);
@@ -2200,7 +2178,8 @@ public function markAllAsRead() {
                       $this->db->where('id', $book_id);
                       $this->db->update('booking', [
                         'in_status' => 'cancelled',
-                        'out_status' => 'cancelled', 
+                        'out_status' => 'cancelled',
+                        // 'reason' => $reason,
                         // 'in_status' => 'occupied',
                         // 'out_status' => 'exit',
                         'in_time' => $start_time_format, 
@@ -2221,8 +2200,8 @@ public function markAllAsRead() {
             $this->db->update('booking', [
               'in_status' => 'cancelled',
               'out_status' => 'cancelled',
-              // 'in_status' => 'occupied',
-              // 'out_status' => 'exit',
+              // 'reason' => $reason,
+
               'in_time' => $start_time_format, 
               'out_time' => $end_time_format]);
             $this->session->set_flashdata('success', 'Booking Succesfully Cancelled.');
@@ -2398,6 +2377,7 @@ public function markAllAsRead() {
       $this->db->update('booking', [
         'in_status' => 'occupied',
         'out_status' => 'exit',
+        'reason' => $reason,
         'in_time' => $start_time_format, 
         'out_time' => $end_time_format]);
 
@@ -2406,6 +2386,15 @@ public function markAllAsRead() {
     }
 
   }
+
+  public function fetch_attendance()
+{
+    $this->load->model('Public_model'); // Load your model
+    $attendance = $this->Public_model->get_attend(); // Fetch data from model
+
+    echo json_encode($attendance);
+}
+
 
   public function excel_export() {
     $d['title'] = 'Attendance';
@@ -2416,36 +2405,64 @@ public function markAllAsRead() {
     $course = $this->input->get('course');
     $college = $this->input->get('college');
     $countOnly = $this->input->get('countOnly');
+    $category = $this->input->get('category');
 
-    if (!$startDate || !$endDate || !$course || !$college) {
-        show_error('Invalid input parameters', 400);
+    if (!$startDate || !$endDate || !$course || !$college ) {
+      $this->session->set_flashdata('error', 'Missing required parameters.');
+      // redirect('attendance');
     }
 
     $this->load->model('Excel');
 
     // Fetch count data if 'countOnly' is true
     if ($countOnly == 'true') {
-        $excel_data = $this->Excel->get_filtered_count_data($startDate, $endDate, $course, $college, true);
+        $excel_data = $this->Excel->get_filtered_count_data($category,$startDate, $endDate, $course, $college, true);
         if (!$excel_data) {
             $this->session->set_flashdata('error', 'No count data found for the given parameters.');
             redirect('attendance');
         }
         //add count_only = true to the excel_data
         $excel_data['count_only'] = true;
-        // Print the count data and exit immediately
-        // echo "<pre>";
-        // print_r($excel_data); // This will show the count data
-        // echo "</pre>";
+
         $this->session->set_flashdata('success', 'Data successfully extracted. Wait for a moment to download the excel.');
         $this->session->set_userdata('excel_data', $excel_data);
         redirect('attendance');
     }else{
     // Fetch regular data if 'countOnly' is not set to true
-    $excel_data = $this->Excel->get_filtered_data($startDate, $endDate, $course, $college, false);
+      $excel_data = $this->Excel->get_filtered_data($category, $startDate, $endDate, $course, $college);
+      $frequent_users = $this->Excel->get_frequent_users($category);
+      $frequent_daily_users = $this->Excel->get_frequent_daily_users($category);
+      $frequent_weekly_users = $this->Excel->get_frequent_weekly_users($category);
+      $frequent_monthly_users = $this->Excel->get_frequent_users_for_this_month($category);
+      $frequent_yearly_users = $this->Excel->get_frequent_users_for_this_year($category);
+      $student_count_per_course_and_college = $this->Excel->student_count_per_course_and_college($category);
+      $get_count_per_college = $this->Excel->get_count_per_college($category);
+      // echo'<pre>';
+      // // print_r($frequent_users);
+      // // print_r($frequent_daily_users);
+      // // print_r($frequent_weekly_users);
+      // // print_r($frequent_monthly_users);
+      // // print_r($frequent_yearly_users);
+      // echo "counts per college: ";
+      // print_r($get_count_per_college);
+      // echo "<br>counts per college and course: ";
+      // print_r($student_count_per_course_and_college);
 
+
+      // echo'<pre>';
     if ($excel_data) {
         $this->session->set_flashdata('success', 'Data successfully extracted. Wait for a moment to download the excel.');
         $this->session->set_userdata('excel_data', $excel_data);
+        $this->session->set_userdata('frequent_users', $frequent_users);
+        $this->session->set_userdata('frequent_daily_users', $frequent_daily_users);
+        $this->session->set_userdata('frequent_weekly_users', $frequent_weekly_users);
+        $this->session->set_userdata('frequent_monthly_users', $frequent_monthly_users);
+        $this->session->set_userdata('frequent_yearly_users', $frequent_yearly_users);
+        $this->session->set_userdata('student_count_per_course_and_college', $student_count_per_course_and_college);
+        $this->session->set_userdata('get_count_per_college', $get_count_per_college);
+
+        
+
         redirect('attendance');
     } else {
         $this->session->set_flashdata('error', 'No data found for the given parameters.');
@@ -2456,6 +2473,11 @@ public function markAllAsRead() {
 
   public function unset_excel_data() {
     $this->session->unset_userdata('excel_data');
+    $this->session->unset_userdata('frequent_users');
+    $this->session->unset_userdata('frequent_daily_users');
+    $this->session->unset_userdata('frequent_weekly_users');
+    $this->session->unset_userdata('frequent_monthly_users');
+    $this->session->unset_userdata('frequent_yearly_users');
     echo json_encode(['status' => 'success']);
 }
 
@@ -2502,6 +2524,10 @@ public function markAllAsRead() {
     $room = $this->input->post('room');
     $cancel = $this->input->post('cancel');
     $password = $this->input->post('password');
+    $reason = $this->input->post('reason');
+    if ($reason == "others") {
+      $reason =  $this->input->post('other_reason');
+    }
     
     //check the users table if it matches the username and password.
     $this->db->where('username', $username);
@@ -2510,6 +2536,14 @@ public function markAllAsRead() {
     $tomorrow_date = date('Y-m-d', strtotime($current_date . ' +1 days'));
     $current_time = date('H:i:s');
     $current_time_format = date('H:i', strtotime($current_time));
+
+    //identifiers
+    $todayAll = false;
+    $todaySpecific = false;
+    $tmrAll = false;
+    $tmrSpecific = false;
+    $dateRangeAll = false;
+    $dateRangeSpecific = false; 
 
     // Check if the user exists and then verify the password
     if ($admin_data && password_verify($password, $admin_data['password'])) {
@@ -2612,11 +2646,13 @@ public function markAllAsRead() {
                 'in_time' => date('H:i:s'),
                 'in_status' => 'cancelled',
                 'out_status' => 'cancelled', 
+                'reason' => $reason,
                 // 'in_status' => 'occupied',
                 // 'out_status' => 'exit',
                 'out_time' => date('H:i:s')]);
             }
             echo "success";
+          $todayAll = true;
           }
           //today specific
           else if ($room != null && $room != "all") {
@@ -2742,11 +2778,13 @@ public function markAllAsRead() {
                 'in_time' => date('H:i:s'),
                 'in_status' => 'cancelled',
                 'out_status' => 'cancelled', 
+                'reason' => $reason,
                 // 'in_status' => 'occupied',
                 // 'out_status' => 'exit',
                 'out_time' => date('H:i:s')]);
             }
             echo "success";
+          $todaySpecific = true;
           }
         }
         else if ($cancel != null && $cancel == "tomorrow"){
@@ -2801,12 +2839,14 @@ public function markAllAsRead() {
               $this->db->update('booking', [
                 'in_time' => date('H:i:s'),
                 'in_status' => 'cancelled',
-                'out_status' => 'cancelled', 
+                'out_status' => 'cancelled',
+                'reason' => $reason,
                 // 'in_status' => 'occupied',
                 // 'out_status' => 'exit',
                 'out_time' => date('H:i:s')]);
             }
             echo "success";
+          $tmrAll = true;
           }
           //tomorrow specific
           else if ($room != null && $room != "all") {
@@ -2862,13 +2902,15 @@ public function markAllAsRead() {
               $this->db->update('booking', [
                 'in_time' => date('H:i:s'), 
                 'in_status' => 'cancelled',
-                'out_status' => 'cancelled', 
+                'out_status' => 'cancelled',
+                'reason' => $reason,
                 // 'in_status' => 'occupied',
                 // 'out_status' => 'exit',
                 'out_time' => date('H:i:s')]);
             }
             // print_r($timesIndex);
             echo "success";
+          $tmrSpecific = true;
           }
         }
       }
@@ -2925,11 +2967,13 @@ public function markAllAsRead() {
               'in_time' => date('H:i:s'),
               'in_status' => 'cancelled',
               'out_status' => 'cancelled',
+              'reason' => $reason,
               // 'in_status' => 'occupied',
               // 'out_status' => 'exit',
               'out_time' => date('H:i:s')]);
           }
           echo "success";
+        $dateRangeAll = true;
         }
         //date range specific
         else if ($room != null && $room != "all"){
@@ -2985,14 +3029,43 @@ public function markAllAsRead() {
             $this->db->update('booking', [
               'in_time' => date('H:i:s'),
               'in_status' => 'cancelled',
-              'out_status' => 'cancelled', 
+              'out_status' => 'cancelled',
+              'reason' => $reason,
               // 'in_status' => 'occupied',
               // 'out_status' => 'exit',
               'out_time' => date('H:i:s')]);
           }
           echo "success";
+        $dataRangeSpecific = true;
         }
       }
+    $this->load->model('Notif_model');
+    //get the recent data from the booking table that was cancelled label in in-status and out-status
+    $this->db->where('in_status', 'cancelled');
+    $this->db->where('out_status', 'cancelled');
+    //where reason column is not null or empty
+    $this->db->where('reason IS NOT NULL AND reason != ""', NULL, FALSE);
+    $this->db->order_by('id', 'DESC');
+    $notif_data = $this->db->get('booking')->row_array();
+
+
+    if ($todayAll == true || $tmrAll == true || $dateRangeAll = true){
+      $data = [
+        'area' => "All",
+        'date' => $notif_data['date'],
+        'reason' => $notif_data['reason']
+      ];
+    }
+
+    if ($todaySpecific == true || $tmrSpecific == true || $dataRangeSpecific == true){
+      $data = [
+        'area' => $notif_data['room'],
+        'date' => $notif_data['date'],
+        'reason' => $notif_data['reason']
+      ];
+    }
+
+    $this->Notif_model->notifications('cancel all booking', $data);
     }
     else {
       echo "Incorrect Password. Please Try again.";
@@ -3048,6 +3121,9 @@ public function markAllAsRead() {
     $studentCounter = 0;
     $addCounter = 0;
     $editCounter = 0;
+    $failedAddCounter = 0;
+    $failedEditCounter = 0;
+    $neutralEditCounter = 0;
     foreach ($data['data']['rows'] as $student) {
         $studentCounter++;
         // Check if srcode or rfid already exists
@@ -3055,36 +3131,59 @@ public function markAllAsRead() {
         // $this->db->or_where('rfid', $student['rfid']);
         $existing_student = $this->db->get('student')->row_array();
 
+        // $data = [
+        //   'first_name' => $student['first_name'],
+        //   'middle_name' => $student['middle_name'],
+        //   'last_name' => $student['last_name'],
+        //   'srcode' => $student['id_number'],
+        //   // 'college' => $student['department'],
+        //   'college' => $student['college'],
+        //   'rfid' => $student['rfid']
+        // ];
+        $data = array_filter([
+          'first_name' => $student['first_name'] ?? null,
+          'middle_name' => $student['middle_name'] ?? null,
+          'last_name' => $student['last_name'] ?? null,
+          'srcode' => $student['id_number'] ?? null,
+          'college' => $student['college'] ?? null,
+          'rfid' => $student['rfid'] ?? null
+        ]);
 
-
-        $data = [
-          'first_name' => $student['first_name'],
-          'middle_name' => $student['middle_name'],
-          'last_name' => $student['last_name'],
-          'srcode' => $student['id_number'],
-          // 'college' => $student['department'],
-          'college' => $student['college'],
-          'rfid' => $student['rfid']
-        ];
-
+        //IF THE STUDENT IS EXISTING, UPDATE
         if ($existing_student) {
-          $editCounter++;
           $this->db->where('srcode', $student['id_number']);
           $this->db->update('student', $data);
+          if ($this->db->affected_rows() > 0) {
+            $editCounter++;
+          } elseif ($this->db->affected_rows() === 0) {
+            $neutralEditCounter++;
+          } else {
+            $failedEditCounter++;
+          }
           continue;
         }
-
-        // Insert data into the database
+        // IF THE STUDENT IS NEW, ADD
         if (!$this->db->insert('student', $data)) {
-          $this->session->set_flashdata('student_fail', 'Error inserting student to the database.');
-          return;
+          $failedAddCounter++;
+          // $this->session->set_flashdata('student_fail', 'Error inserting student to the database.');
+          continue;
         }else{
           $addCounter++;
         }
       }
 
       // $this->session->set_flashdata('student_scs', 'Students succesfully imported from the Enrollment System\'s database.');
-      $this->session->set_flashdata('student_scs', "Succesfully imported $studentCounter student records, added $addCounter new student records and updated $editCounter existing student records");
+      $this->session->set_flashdata('student_neutral', 
+          "<i class='fas fa-check-circle text-success'></i> Succesfully imported $studentCounter student records." . PHP_EOL .
+          "---------------------------------" . PHP_EOL .
+          "<i class='fas fa-plus-circle text-primary'></i> Added $addCounter new student records." . PHP_EOL .
+          "---------------------------------" . PHP_EOL .
+          "<i class='fas fa-edit text-warning'></i> Updated $editCounter existing student records." . PHP_EOL .
+          "---------------------------------" . PHP_EOL .
+          "<i class='fas fa-times-circle text-danger'></i> $failedAddCounter student records failed to be added." . PHP_EOL .
+          "---------------------------------" . PHP_EOL .
+          "<i class='fas fa-times-circle text-danger'></i> $failedEditCounter student records failed to be updated."
+      );
       redirect('master/student');
     }
 

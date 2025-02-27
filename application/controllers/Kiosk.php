@@ -627,7 +627,7 @@ class Kiosk extends CI_Controller
 
       //compare the srcode to the booking. get the latest booking.
       // $this->db->where('id');
-      // Fetch booking data
+      // Fetch booking data 
       $this->db->where(['code' => $rfid]);
       $this->db->or_where(['code' => $qr]);
       // $this->db->limit(1);
@@ -697,7 +697,12 @@ class Kiosk extends CI_Controller
             }
           }
       }
-      echo json_encode($data) ;   
+      // $bookingData = [
+      //   'booking_status' => 'cancelled',
+      //   'booking_reason' => 'secret'
+      // ];
+      // echo json_encode($bookingData);
+      echo json_encode($data);   
     }
   public function UserGetSR()
   {
@@ -717,8 +722,16 @@ class Kiosk extends CI_Controller
     $kiosk_id = $this->input->get("kiosk_id");        
     if($code_type=='QR')
       $data  =$this->db->get_where('student', ['qrcode' => $code])->row_array();
+      if ($data == NULL)
+        $data  =$this->db->get_where('faculty', ['qrcode' => $code])->row_array();
+        if ($data == NULL)
+          $data  =$this->db->get_where('visitor', ['qrcode' => $code])->row_array();
     else 
       $data  =$this->db->get_where('student', ['rfid' => $code])->row_array();
+      if ($data == NULL)
+        $data  =$this->db->get_where('faculty', ['rfid' => $code])->row_array();
+        if ($data == NULL)
+          $data  =$this->db->get_where('visitor', ['rfid' => $code])->row_array();
     if($data == NULL){
       echo "no student record";
       return;
@@ -848,116 +861,129 @@ class Kiosk extends CI_Controller
     }     
   
   }
-public function TapQRPair()
-{
-  date_default_timezone_set("Asia/Manila");
-  $Sdate = date('Y-m-d', time());
-  $date = date('Y-m-d H:i:s', time());
-  $code_type = $this->input->get("code_type");
-  $code = $this->input->get("code");    
-  $kiosk_id = $this->input->get("kiosk_id");
-  // $password = $this->input->get("password");
-  
-  // $checkPass = $this->db->get_where('student', ['password' => $password])->row_array();
 
-  // if($checkPass)
-  // {
-    if($code_type == 'QR' || $code_type == 'qr'){
-      $data = $this->db->order_by('id', 'desc')->get_where('attend', ['qrcode' => $code,'date'=>$Sdate])->row_array();
-    }
-    else if ($code_type == 'RFID'|| $code_type == 'rfid'){
-      $data  =$this->db->order_by('id', 'desc')->get_where('attend', ['rfid' => $code,'date'=>$Sdate])->row_array();
-    }
-  
-      if($data == NULL)
-      {
-        if($code_type=='QR' || $code_type == 'qr'){
-          $data  =$this->db->get_where('student', ['qrcode' => $code])->row_array();
-        }
-        else if ($code_type == 'RFID'|| $code_type == 'rfid'){
-          $data  =$this->db->get_where('student', ['rfid' => $code])->row_array();
-        }
-  
-        if($data == NULL)
-        {
-          echo "No QR Data";
+  public function TapQRPair()
+    {
+        date_default_timezone_set("Asia/Manila");
+        // DATE TODAY
+        $Sdate = date('Y-m-d', time());
+        // DATE AND TIME TODAY
+        $date = date('Y-m-d H:i:s', time());
+    
+        $code_type = $this->input->get("code_type");
+        $code = $this->input->get("code");
+        $kiosk_id = $this->input->get("kiosk_id");
+        $isStudent = TRUE;
+        $isFaculty = FALSE;
+        // Check the code type and adjust the query condition accordingly
+        if ($code_type == 'qr' || $code_type == 'QR') {
+            $data = $this->db->get_where('student', ['qrcode' => $code])->row_array();
+        } else if ($code_type == 'rfid' || $code_type == 'RFID') {
+            $data = $this->db->get_where('student', ['rfid' => $code])->row_array();
+            if ($data == NULL) {
+                $data = $this->db->get_where('faculty', ['rfid' => $code])->row_array();
+                $isStudent = FALSE;
+                $isFaculty = TRUE;
+                if ($data == NULL) {
+                    $data = $this->db->get_where('visitor', ['rfid' => $code])->row_array();
+                    $isStudent = FALSE;
+                    $isFaculty = FALSE;
+                }
+            }
+        } else {
+          echo "invalid code type";
           return;
         }
-  
-        $srcode = $data['srcode'];
-          $username = ($data['first_name'].' '.$data['last_name']) ;         
-          $data = array(            
-            'username' => $username,
-            'srcode' => $srcode,
-            'qrcode' =>"",
-            'RFID' =>"",          
-            'kiosk' => $kiosk_id,
-            'in_time' => $date,
-            'date' => $Sdate
-          );        
-          if($code_type=='QR' || $code_type == 'qr')
-            $data['qrcode'] = $code;
-          else if ($code_type == 'RFID' || $code_type == 'rfid')
-            $data['RFID'] = $code;
-
-          $this->db->insert('attend', $data);
-          echo "time in success";
-      }
-      else
-      {
-        if(empty($data['out_time']))
-        {
-          $id =$data['id'];
-          $queryUpdate = "UPDATE `attend` SET `out_time` = '$date', `kiosk` = '$kiosk_id' WHERE `id` = '$id'";
-          // $queryUpdate = "UPDATE `attend`  SET `out_time` = '" .$date. "'   WHERE  `id` = '$id'";
-          // $queryUpdate = "UPDATE `attend`  SET `kiosk` = '" .$kiosk_id. "'  WHERE  `id` = '$id'";
-          $this->db->query($queryUpdate);
-          $type = 'stud_timeout';
-          // $this->load->model('Notif_model');
-          // $this->Notif_model->notifications($type, $data);
-          echo "time out success";   
+    
+        if ($data == NULL) {
+          echo "No QR Data";
+          print_r($data);
+          return;
         }
-        else
-        {
-          if($code_type=='QR')
-            $data  =$this->db->get_where('student', ['qrcode' => $code])->row_array();
-          else 
-            $data  =$this->db->get_where('student', ['rfid' => $code])->row_array();
-  
-          if($data == NULL){
-            echo "No QR Data";
-            return;
+        //check the flag if true or false
+        if ($isStudent == TRUE && $isFaculty == FALSE) {
+            $category = 'student';
+        }
+        else if ($isStudent == FALSE && $isFaculty == TRUE) {
+            $category = 'faculty';
+        }
+        else if ($isStudent == FALSE && $isFaculty == FALSE) {
+            $category = 'visitor';
+        }
+        
+        //CHECK THE CATEGORY VALUE AND PROCEED TO TIMEIN OUT ACCORDINGLY
+        if ($category == 'student' || $category == 'faculty') {
+                  // Check for today's attendance record with incomplete "out_time"
+              $records = $this->db->get_where('attend', [
+                'srcode' => $data['srcode'],
+                'date' => $Sdate,
+                'out_time' => NULL // Check if "out_time" is NULL
+            ])->row_array();
+            if ($records) {
+                // If an incomplete record exists, proceed to "time-out"
+                $this->db->where('id', $records['id']);
+                $this->db->update('attend', ['out_time' => $date]);
+                
+                echo "time out success";
+            } else {
+                // Create a new "time-in" record
+                $srcode = $data['srcode'];
+                $username = ($data['first_name'] . ' ' . $data['last_name']);
+                $rfidValue = $data['rfid'];
+                $data = [
+                    'username' => $username,
+                    'category' => $category,
+                    'qrcode' => ($code_type == 'qr' ? $code : ""),
+                    // 'RFID' => ($code_type == 'rfid' ? $code : ""),
+                    'RFID' => $rfidValue,
+                    // 'pin' => ($code_type == 'pin' ? $code : ""),
+                    'srcode' => $srcode,
+                    'kiosk' => $kiosk_id,
+                    'in_time' => $date,
+                    'date' => $Sdate
+                ];
+        
+                $this->db->insert('attend', $data);
+                echo "time in success";
+            }
+        }
+        else {
+          // Check for today's attendance record with incomplete "out_time"
+          $records = $this->db->get_where('attend', [
+              'rfid' => $code,
+              'date' => $Sdate,
+              'out_time' => NULL 
+          ])->row_array();
+          if ($records) {
+              // If an incomplete record exists, proceed to "time-out"
+              $this->db->where('id', $records['id']);
+              $this->db->update('attend', ['out_time' => $date]);
+              
+              echo "time out success";
+          } else {
+              // Create a new "time-in" record
+              $username = $data['name'];
+              $rfidValue = $data['rfid'];
+              $visitorID = $data['id'];
+
+              $data = [
+                  'username' => $username,
+                  'category' => $category,
+                  'qrcode' => ($code_type == 'qr' ? $code : ""),
+                  'RFID' => $rfidValue,
+                  // 'RFID' => ($code_type == 'rfid' ? $code : ""),
+                  'srcode' => $visitorID,
+                  'kiosk' => $kiosk_id,
+                  'in_time' => $date,
+                  'date' => $Sdate
+              ];
+      
+              $this->db->insert('attend', $data);
+              echo "time in success";
           }
-  
-          $srcode = $data['srcode'];
-          $username = ($data['first_name'].' '.$data['last_name']) ;         
-          $data = array(            
-            'username' => $username,
-            'srcode' => $srcode,
-            'qrcode' =>"",
-            'RFID' =>"",          
-            'kiosk' => $kiosk_id,
-            'in_time' => $date,
-            'date' => $Sdate
-          );        
-          if($code_type=='QR' || $code_type == 'qr')
-            $data['qrcode'] = $code;
-          else if ($code_type == 'RFID' || $code_type == 'rfid')
-            $data['RFID'] = $code;
-          $this->db->insert('attend', $data);
-          // $type = 'stud_timein';
-          // $this->load->model('Notif_model');
-          // $this->Notif_model->notifications($type, $data);
-          echo "time in success";
         }
-      }   
-  // } 
-  // else {
-  //   echo 'No Pass or Wrong Pass';
-  // }
-
-  
-}
+        
+    }
   public function GetSmallImageList()
   {
     $imgList = glob('assets/images_S/*.{png,jpg,jpeg,gif,webp}', GLOB_BRACE);
@@ -1504,6 +1530,56 @@ public function TapQRPair()
     }
       // echo "The current time is later than the end time. Booking has no time out yet.";
       
+  }
+
+  public function cancelAllbookingstest(){
+    //default date manila
+    $this->load->model('Notif_model');
+    //get the recent data from the booking table that was cancelled label in in-status and out-status
+    $this->db->where('in_status', 'cancelled');
+    $this->db->where('out_status', 'cancelled');
+    //where reason column is not null or empty
+    $this->db->where('reason IS NOT NULL AND reason != ""', NULL, FALSE);
+    //make sure to get the recent data
+    $this->db->order_by('id', 'DESC');
+    $notif_data = $this->db->get('booking')->row_array();
+
+    $this->Notif_model->notifications('cancel all booking', $notif_data);
+
+    echo json_encode($notif_data);
+    
+  }
+
+  public function HttpGetNotification(){
+    //get the timezone right
+    date_default_timezone_set("Asia/Manila");
+    //get the recent data from the notification table
+    $this->db->limit(1);
+    $this->db->order_by('id', 'DESC');
+    // make sure that the type is "cancel all booking"
+    $this->db->where('type', 'cancel all booking');
+    //make sure that the date is today
+    $this->db->like('created_at', date('Y-m-d'), 'after');
+    
+    $notification_data = $this->db->get('notifications')->row_array();
+
+    //get the message from notification data
+    $message = $notification_data['message'];
+    //if message is null, set it to: No Cancellation today.
+    if ($message == null) {
+      $data = [
+        'returnMessage' => '0',
+        'message' => "No Cancellation today."
+      ];
+    }else{
+      $data = [
+        'returnMessage' => '1',
+        'message' => $message
+      ];
+    }
+
+
+    echo json_encode($data);
   }
   
 }
