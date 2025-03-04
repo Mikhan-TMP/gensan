@@ -188,13 +188,36 @@
                   </span>
                   <span class="text">Export</span>
                 </button> -->
-                <button id="exportCsvButton" type="button" class="btn btn-secondary btn-icon-split mb-4 shadow-sm">
+                <!-- <button id="exportCsvButton" type="button" class="btn btn-secondary btn-icon-split mb-4 shadow-sm">
                   <span class="icon text-white-600">
                     <i class="fas fa-file-export"></i>
                   </span>
                   <span class="text">Excel Export</span>
+                </button> -->
+                <!-- Button for Printing -->
+                <button id="printStudents" type="button" class="btn btn-secondary btn-icon-split mb-4 shadow-sm">
+                  <span class="icon text-white-600">
+                    <i class="fas fa-print"></i>
+                  </span>
+                  <span class="text">Print Students</span>
                 </button>
-
+                <script>
+                  document.getElementById('printStudents').addEventListener('click', function() {
+                    Swal.fire({
+                      title: 'Print Student List',
+                      text: "You will be redirected to the print page.",
+                      icon: 'info',
+                      showCancelButton: true,
+                      confirmButtonColor: '#3085d6',
+                      cancelButtonColor: '#d33',
+                      confirmButtonText: 'Proceed to Print'
+                    }).then((result) => {
+                      if (result.isConfirmed) {
+                        window.location.href = '<?= base_url('master/print_students') ?>';
+                      }
+                    });
+                  });
+                </script>
               </div>
             </div>
           </div>
@@ -296,6 +319,7 @@
                   </div>
                 </div>
               </div>
+              
           <!-- Modal for Exporting Students to Excel -->
           <div class="modal fade bd-example-modal-xl-export" tabindex="-1" role="dialog" aria-labelledby="exportModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-xl">
@@ -388,7 +412,7 @@
             ">
           <h6 class="m-0 text-light" 
                   style="font-size:1.5rem;
-                  font-family: 'Inter', sans-serif;">Data Tables Student</h6>
+                  font-family: 'Inter', sans-serif;">Student Table</h6>
         </div>
         <div class="card-body">
               <div class="table-responsive">
@@ -398,13 +422,14 @@
                   <th scope="col">#</th>
                   <th scope="col">Student ID</th>
                   <th scope="col">Name</th>
-                  <th scope="col">Gender</th>
                   <th scope="col">College</th>
                   <th scope="col">Course</th>
                   <th scope="col">Year</th>
                   <!-- <th scope="col">PIN</th>-->
-                  <th scope="col">QR</th>
                   <th scope="col">RFID</th>
+                  <th scope="col">QR</th>
+                  <th scope="col">Gender</th>
+                  <th scope="col">Status</th>
                   <!-- th>IMAGE</th>
                   <th>BUILDING</th -->              
                   <th scope="col align-middle">Action</th>
@@ -422,19 +447,22 @@
                     <!-- td class=" align-middle"><?= $emp['id']; ?></td -->
                     <td class=" align-middle"><?= $emp['srcode']; ?></td>
                     <td class=" align-middle"><?= $emp['last_name'].", ".$emp['first_name']." ".$emp['middle_name'] ; ?></td>
-                    <td class=" align-middle"><?php if ($emp['gender'] == 'M') {
-                                                echo 'Male';
-                                              } elseif ($emp['gender'] == 'F') {
-                                                echo 'Female';
-                                              } else{ }; ?></td>
-                    <td class=" align-middle"><?= $emp['college']; ?></td>
-                    <td class=" align-middle"><?= $emp['course']; ?></td>
-                    <td class=" align-middle"><?= $emp['schoolyear']; ?></td>
+                    <td class=" align-middle"><?= empty($emp['college']) ? "-" : $emp['college']; ?></td>
+                    <td class=" align-middle"><?= empty($emp['course']) ? "-" : $emp['course']; ?></td>
+                    <td class=" align-middle"><?= empty($emp['schoolyear']) ? "-" : $emp['schoolyear']; ?></td>
                     <!-- <td class=" align-middle"><?= $emp['pin']; ?></td> -->
-                    <td class=" align-middle"><span class="asterisk" data-value="<?= $emp['qrcode']; ?>"><?= $emp['qrcode'] ? '********' : '-'; ?></span></td>
                     <td class=" align-middle"><span class="asterisk" data-value="<?= $emp['rfid']; ?>"><?= $emp['rfid'] ? '********' : '-'; ?></span></td>
-
-
+                    <td class=" align-middle"><span class="asterisk" data-value="<?= $emp['qrcode']; ?>"><?= $emp['qrcode'] ? '********' : '-'; ?></span></td>
+                    <td class="align-middle">
+                      <?= $emp['gender'] === 'M' ? '<i class="fas fa-male text-danger" style="cursor: pointer;"> Male</i>' : ($emp['gender'] === 'F' ? '<i class="fas fa-female text-success" style="cursor: pointer;"> Female</i>' : '<i class="fas fa-genderless text-secondary" style="cursor: pointer;"> N/A</i>') ?>
+                    </td>
+                    <td class=" align-middle">
+                      <?php if ($emp['status'] == '1') {
+                        echo '<span class="badge badge-success" style="padding: 10px; width:70px; cursor: pointer">Active</span>';
+                      } else {
+                        echo '<span class="badge badge-danger" style="padding: 10px; width:70px; cursor: pointer">Inactive</span>';
+                      } ?>
+                    </td>
                     <!-- td class="text-center"><img src="<?= base_url('images/pp/') . $emp['image']; ?>" style="width: 55px; height:55px" class="img-rounded"></td>
                     <td class=" align-middle"><?= $emp['building']; ?></td -->
                     <td class="text-center align-middle" style="display: flex; align-items: center; gap: 10px">

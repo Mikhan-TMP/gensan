@@ -155,6 +155,7 @@
 
   <br>
 
+
   <?php if ($attendance == false) : ?>
     <h1>No Data, Please Pick Your Date and Building</h1>
   <?php else : ?>
@@ -312,6 +313,114 @@
 
 <!-- End of Main Content -->
 
+<script>
+  let autoUpdate = true;
+  let interval;
+  let dataTable; 
+
+  function fetchReservations() {
+      if (!autoUpdate) return;
+
+      $.ajax({
+          url: "<?= base_url('master/fetch_reservations'); ?>",
+          method: "GET",
+          dataType: "json",
+          beforeSend: function () {
+              $("#loadingIndicator").show();
+          },
+          success: function (data) {
+              let formattedData = data.map(attend => {
+                  let startTime = attend.start_time ? formatTime(attend.start_time) : '-';
+                  let endTime = attend.end_time ? formatTime(attend.end_time) : '-';
+                  let inTime = attend.in_time ? formatTime(attend.in_time) : '...';
+                  let outTime = attend.out_time ? formatTime(attend.out_time) : '...';
+                  let duration = calculateDuration(attend.in_time, attend.out_time);
+                  let fullName = attend.fname && attend.lname ? `${attend.fname} ${attend.lname}` : "No Name";
+
+                  let actionBtn = '';
+                  if (!attend.in_time) {
+                      actionBtn = `<a href="#" class="btn confirm-end-booking w-100" data-url="<?= base_url('master/cancelBooking?book_id='); ?>${attend.id}&start=${startTime}&end=${endTime}" style="background: linear-gradient(180deg, #BE110E, #630908); font-size: 12px; color: white; border: none !important;"> Cancel</a>`;
+                  } else if (!attend.out_time) {
+                      actionBtn = `<a href="#" class="btn confirm-timeout-booking w-100" data-url="<?= base_url('master/timeoutForce?book_id='); ?>${attend.id}&end=${endTime}" style="background: linear-gradient(180deg, #BE110E, #630908); font-size: 12px; color: white; border: none !important;"> Timeout</a>`;
+                  } else {
+                      actionBtn = `<button class="btn w-100" style="background: linear-gradient(180deg, #BE110E, #630908); font-size: 12px; color: white; border: none; opacity: 0.6; cursor: not-allowed;" disabled>${getStatusLabel(attend)}</button>`;
+                  }
+
+                  return [
+                      attend.id,
+                      attend.date,
+                      attend.floor,
+                      attend.room,
+                      startTime,
+                      endTime,
+                      attend.slot_id,
+                      fullName,
+                      inTime,
+                      outTime,
+                      actionBtn,
+                      duration
+                  ];
+              });
+
+              dataTable.clear().rows.add(formattedData).draw(false);
+          },
+          complete: function () {
+              $("#loadingIndicator").hide();
+              $("#checkmarkIndicator").show();
+              setTimeout(() => { $("#checkmarkIndicator").hide(); }, 3000);
+          },
+          error: function () {
+              console.log("AJAX request failed.");
+              $("#loadingIndicator").hide();
+              $("#checkmarkIndicator").hide();
+          }
+      });
+  }
+
+  function formatTime(timeStr) {
+      let time = new Date(`1970-01-01T${timeStr}:00`);
+      return time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+  }
+
+  function calculateDuration(inTime, outTime) {
+      if (!inTime || !outTime) return 'On going';
+      let inDate = new Date(`1970-01-01T${inTime}:00`);
+      let outDate = new Date(`1970-01-01T${outTime}:00`);
+      let diff = Math.abs(outDate - inDate) / 1000;
+      let hours = Math.floor(diff / 3600);
+      let minutes = Math.floor((diff % 3600) / 60);
+      let seconds = diff % 60;
+      return `${hours}hrs: ${minutes}m: ${seconds}s`;
+  }
+
+  function getStatusLabel(attend) {
+      if (attend.in_status === "occupied" && attend.out_status === "exit") return "Completed";
+      if (attend.in_status === "occupied" && attend.out_status === "early-exit") return "Early Exit";
+      if (attend.in_status === "occupied" && attend.out_status === "late-exit") return "Late Exit";
+      if (attend.in_status === "late-in" && attend.out_status === "late-exit") return "Late";
+      if (attend.in_status === "occupied" && attend.out_status === "f-timeout") return "Timed out";
+      if (attend.in_status === "cancelled" || attend.out_status === "cancelled") return "Cancelled";
+      return "Unknown";
+  }
+
+  $(document).ready(function () {
+      fetchReservations();
+      interval = setInterval(fetchReservations, 5000);
+  });
+
+  $("#toggleUpdate").on("click", function () {
+      autoUpdate = !autoUpdate;
+      if (autoUpdate) {
+          $(this).html('<i class="fas fa-pause-circle"></i> Stop Auto-Update');
+          interval = setInterval(fetchReservations, 5000);
+          fetchReservations();
+      } else {
+          $(this).html('<i class="fas fa-play-circle"></i> Start Auto-Update');
+          clearInterval(interval);
+      }
+  });
+
+</script>
 
 <script>
   $(document).ready(function () {

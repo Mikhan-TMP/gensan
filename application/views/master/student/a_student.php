@@ -1,4 +1,8 @@
-        <!-- Begin Page Content -->
+
+<style>
+  
+</style>
+<!-- Begin Page Content -->
         <div class="container-fluid">
 
           <!-- Page Heading -->
@@ -170,26 +174,39 @@
                 <!-- Fifth Row -->
                 <div class="row">
                   <!-- Gender -->
-                  <div class="col-lg-6">           
-                    <div class="form-group mt-4" style="    
-                              display: flex;
-                              flex-direction: column;
-                              /* border-color: blue;">
-                      <label for="e_gender"  class="text-dark" style="font-weight: bold;">Gender</label>
-                      <br>
-                      <div class="form-check form-check-inline my-0" >
+                  <div class="col-lg-6">
+                    <div class="form-group mt-4 d-flex flex-column">
+                      <label for="e_gender" class="text-dark font-weight-bold">Gender</label>
+                      <div class="form-check form-check-inline">
                         <input class="form-check-input" type="radio" name="e_gender" id="m" value="M" checked>
-                        <label class="form-check-label" for="m"> Male   </label>
-                        <?= form_error('e_gender', '<small class="text-danger">', '</small>') ?>                      
-                        &nbsp
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="e_gender" id="f" value="F">
-                          <label class="form-check-label" for="f"> Female </label>
-                        </div>
-                      </div>                  
+                        <label class="form-check-label" for="m">Male</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="e_gender" id="f" value="F">
+                        <label class="form-check-label" for="f">Female</label>
+                      </div>
+                      <?= form_error('e_gender', '<small class="text-danger">', '</small>') ?>
                     </div>
                   </div>
-                </div>    
+
+                  <!-- Status -->
+                  <div class="col-lg-6">
+                    <div class="form-group mt-4 d-flex flex-column">
+                      <label for="status" class="text-dark font-weight-bold">Status</label>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="status" id="active" value="1" checked>
+                        <label class="form-check-label" for="active">Active</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="status" id="inactive" value="0">
+                        <label class="form-check-label" for="inactive">Inactive</label>
+                      </div>
+                      <?= form_error('status', '<small class="text-danger">', '</small>') ?>
+                    </div>
+                  </div>
+                </div>
+   
+
                 
                <!-- Last Row -->
               <div class ="row">

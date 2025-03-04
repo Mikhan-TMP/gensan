@@ -538,6 +538,7 @@ $config['proxy_ips'] = '';
 |
 */
 $config['api_endpoint'] = 'https://api.sandbox.centralizedinc.com/management/v1.0/integrations/students';
+$config['api_endpoint_faculty'] = 'https://api.sandbox.centralizedinc.com/management/v1.0/integrations/faculties';
 $config['auth_url'] = 'https://api.sandbox.centralizedinc.com/iam/v1.0/integrations/auth';
 
 $config['username'] =  'psbd_1';

@@ -28,8 +28,8 @@
                     <div class="row">
                       <div class="col-lg-1">
                         <div class="form-group">
-                          <label for="employee_id" class="text-dark" style="font-weight: bold;">ID</label>
-                          <input type="text" readonly class="form-control-plaintext" name="e_id" value="<?= $employee['id']; ?>"
+                          <!-- <label for="employee_id" class="text-dark" style="font-weight: bold;">ID</label> -->
+                          <input hidden type="text" readonly class="form-control-plaintext" name="e_id" value="<?= $employee['id']; ?>"
                           style="border-radius:15px; font-size: 1rem; padding: 5px;">
                         </div>
                       </div>
@@ -39,7 +39,7 @@
                       <div class="col-lg-6">
                         <div class="form-group">
                           <label for="e_name" class="text-dark" style="font-weight: bold;">First Name</label>
-                          <input type="text" minlength="2" maxlength="30" class="form-control" name="f_name" id="f_name" value="<?= $employee['first_name']; ?>"
+                          <input required type="text" minlength="2" maxlength="30" class="form-control" name="f_name" id="f_name" value="<?= $employee['first_name']; ?>"
                           style="border-radius:15px; font-size: 1rem; padding: 25px;">
                           <?= form_error('e_name', '<small class="text-danger">', '</small>') ?>                          
                         </div>
@@ -58,14 +58,14 @@
                       <div class="col-lg-6">
                         <div class="form-group">
                           <label for="e_name" class="text-dark" style="font-weight: bold;">Last Name</label>
-                          <input type="text" minlength="2" maxlength="30" class="form-control" name="l_name" id="l_name" value="<?= $employee['last_name']; ?>"
+                          <input required type="text" minlength="2" maxlength="30" class="form-control" name="l_name" id="l_name" value="<?= $employee['last_name']; ?>"
                           style="border-radius:15px; font-size: 1rem; padding: 25px;">
                           <?= form_error('e_name', '<small class="text-danger">', '</small>') ?>
                         </div>
                       </div>
                       <div class="col-lg-6">
                         <div class="form-group">
-                          <label for="d_id" class="text-dark" style="font-weight: bold;">College </label>
+                          <label for="d_id" class="text-dark" style="font-weight: bold;">College</label>
                           <div class="col-lg p-0">
                             <input type="text" minlength="2" maxlength="30" class="form-control" name="college" id="college" value="<?= $employee['course']; ?>"
                             style="border-radius:15px; font-size: 1rem; padding: 25px;">
@@ -79,7 +79,7 @@
                         <div class="form-group">
                           <label for="e_id" class="text-dark" style="font-weight: bold;">Faculty ID </label>
                           <div class="col-lg p-0">
-                            <input type="text" minlength="4" maxlength="30" class="form-control" name="srcode" id="srcode" value="<?= $employee['srcode']; ?>"
+                            <input required type="text" minlength="4" maxlength="30" class="form-control" name="srcode" id="srcode" value="<?= $employee['srcode']; ?>"
                             style="border-radius:15px; font-size: 1rem; padding: 25px;">
                             <?= form_error('e_srcode', '<small class="text-danger">', '</small>') ?>
                           </div>
@@ -120,23 +120,48 @@
                           </div>
                         </div>
                       </div>
-                      <div class="col-lg-4">
-                        <div class="form-group">
-                          <label for="e_gender" class="text-dark" style="font-weight: bold;">Gender</label>
-                          <div class="row col-lg">
-                            <div class="form-check form-check-inline my-0">
-                              <input class="form-check-input" type="radio" name="e_gender" id="m" value="M" <?php if ($employee['gender'] == 'M') { echo 'checked';  }; ?>>
-                              <label class="form-check-label" for="m"> Male</label>
+                      <div class="col-lg-6" style="display:flex; flex-direction: row; justify-content: space-between;">
+                        <div>
+                        </div>
+
+                            <div class="form-group">
+                              <label for="e_gender" class="text-dark" style="font-weight: bold;">Gender</label>
+                              <div class="row col-lg">
+                                <div class="form-check form-check-inline my-0">
+                                  <input class="form-check-input" type="radio" name="e_gender" id="m" value="M" <?php if ($employee['gender'] == 'M') {echo 'checked';}; ?>>
+                                  <label class="form-check-label" for="m">
+                                    Male
+                                  </label>
+                                  <?= form_error('e_gender', '<small class="text-danger">', '</small>') ?>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                  <input class="form-check-input" type="radio" name="e_gender" id="f" value="F" <?php if ($employee['gender'] == 'F') {echo 'checked';}; ?>>
+                                  <label class="form-check-label" for="f">
+                                    Female
+                                  </label>
+                                </div>
+                              </div>
                               <?= form_error('e_gender', '<small class="text-danger">', '</small>') ?>
                             </div>
-                            <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="radio" name="e_gender" id="f" value="F" <?php if ($employee['gender'] == 'F') { echo 'checked'; }; ?>>
-                              <label class="form-check-label" for="f"> Female </label>
-                            </div>
+
+                              <div class="form-group">
+                                <label for="e_gender" class="text-dark" style="font-weight: bold;">Status</label>
+                                <div class="row col-lg">
+                                  <div class="form-check form-check-inline my-0">
+                                    <input class="form-check-input" type="radio" name="status" id="active" value="1" <?php if ($employee['status'] == '1') {echo 'checked';}; ?>>
+                                    <label class="form-check-label" for="active">Active</label>
+                                    <?= form_error('e_gender', '<small class="text-danger">', '</small>') ?>
+                                  </div>
+                                  <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="status" id="inactive" value="0" <?php if ($employee['status'] == '0') {echo 'checked';}; ?>>
+                                    <label class="form-check-label" for="inactive">Inactve</label>
+                                  </div>
+                                </div>
+                                <?= form_error('status', '<small class="text-danger">', '</small>') ?>
+                              </div>
                           </div>
-                          <?= form_error('e_gender', '<small class="text-danger">', '</small>') ?>
+                        <div>
                         </div>
-                      </div>
                     </div>
 
                     <div class="row">

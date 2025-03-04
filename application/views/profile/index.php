@@ -1,3 +1,8 @@
+<?php 
+// echo "<pre>";
+// print_r($account);
+// echo "<pre>";
+?>
 <!-- Begin Page Content -->
 <div class="container-fluid">
   <!-- Page Heading -->
@@ -24,19 +29,29 @@
             <td><?= $account['id']; ?></td>
           </tr>
           <tr>
-            <th scope="row">Name</th>
+            <th scope="row">Username</th>
             <td><?= $account['name'] ?></td>
           </tr>
-          <!-- <tr>
+          <tr>
+            <th scope="row">Name</th>
+            <td><?= $account['fname'] . " " . $account['lname'] ?></td>
+          </tr>
+          <tr>
             <th scope="row">Email</th>
             <td><?= $account['email'] ?></td>
-          </tr> -->
+          </tr>
+          <tr>
+            <th scope="row">Floor Designation</th>
+            <td><?= $account['floor'] ?></td>
+          </tr>
+
+
 
         </tbody>
       </table>
     </div>
   </div>
-</div>
+</div>          
 <!-- /.container-fluid -->
 
 <!-- Modal for Image Upload -->

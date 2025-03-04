@@ -114,7 +114,11 @@ class Excel extends CI_Model
         $this->db->order_by('count', 'desc');
     
         $query = $this->db->get();
-        return $query->result_array();
+        $result = $query->result_array();
+        foreach ($result as &$row) {
+            $row['category'] = $category;
+        }
+        return $result;
     }
     public function get_frequent_daily_users($category){
         $this->db->select('attend.srcode, COUNT(*) as count');
@@ -154,7 +158,11 @@ class Excel extends CI_Model
         $this->db->order_by('count', 'desc');
     
         $query = $this->db->get();
-        return $query->result_array();
+        $result = $query->result_array();
+        foreach ($result as &$row) {
+            $row['category'] = $category;
+        }
+        return $result;
     }
 
     public function get_frequent_weekly_users($category){
@@ -196,7 +204,11 @@ class Excel extends CI_Model
         $this->db->order_by('count', 'desc');
     
         $query = $this->db->get();
-        return $query->result_array();
+        $result = $query->result_array();
+        foreach ($result as &$row) {
+            $row['category'] = $category;
+        }
+        return $result;
     }
 
     public function get_frequent_users_for_this_month($category) {
@@ -237,7 +249,11 @@ class Excel extends CI_Model
         $this->db->order_by('count', 'desc');
     
         $query = $this->db->get();
-        return $query->result_array();
+        $result = $query->result_array();
+        foreach ($result as &$row) {
+            $row['category'] = $category;
+        }
+        return $result;
     }
     public function get_frequent_users_for_this_year($category){
         $this->db->select('attend.srcode, COUNT(*) as count');
@@ -277,19 +293,32 @@ class Excel extends CI_Model
         $this->db->order_by('count', 'desc');
     
         $query = $this->db->get();
-        return $query->result_array();
+        $result = $query->result_array();
+        foreach ($result as &$row) {
+            $row['category'] = $category;
+        }
+        return $result;
     }
-    public function get_count_per_college($category) {
+    
+    public function get_count_per_college($category, $startDate, $endDate) {
         $this->db->from('attend');
+
         $this->db->where('attend.category', strtolower($category));
+        $this->db->where('date >=', $startDate);
+        $this->db->where('date <=', $endDate);
 
         if ($category === "Student"){
+            //ensure that only one records get counted
+            // $this->db->select('student.college, COUNT(DISTINCT attend.srcode, attend.date) as count');
             $this->db->select('student.college, COUNT(student.srcode) as count');
             $this->db->join('student', 'student.srcode = attend.srcode', 'left');
+            $this->db->where('student.status', 1);
             $this->db->group_by('student.college');
         }else if ($category === "Faculty"){
+            // $this->db->select('faculty.course, COUNT(DISTINCT attend.srcode, attend.date) as count');
             $this->db->select('faculty.course, COUNT(faculty.srcode) as count');
             $this->db->join('faculty', 'faculty.srcode = attend.srcode', 'left');
+            $this->db->where('faculty.status', 1);
             $this->db->group_by('faculty.course');
         }else{
             return [
@@ -297,32 +326,48 @@ class Excel extends CI_Model
                     'data' => 'No Data.',
                     'college' => null,
                     'course' => null,
-                    'count' => null
+                    'count' => null,
+                    'dateFrom' => $startDate,
+                    'dateTo' => $endDate
                 ]
             ];
         }
         $query = $this->db->get();
 
         $result = $query->result_array();
+
         foreach ($result as &$row) {
             $row['category'] = $category;
+            $row['dateFrom'] = $startDate;
+            $row['dateTo'] = $endDate;
         }
+
+
+
         return $result;
     }
-    public function student_count_per_course_and_college($category) { 
+    public function student_count_per_course_and_college($category, $startDate, $endDate) { 
         if ($category === 'Student'){
+            // $this->db->select('s.course, s.college, COUNT(DISTINCT a.srcode, a.date) as count');
+            // $this->db->from('attend a');
             $this->db->select('s.course, s.college, COUNT(*) as count');
             $this->db->from('attend a');
             $this->db->join('student s', 'a.srcode = s.srcode', 'left');
             $this->db->where('s.course IS NOT NULL');  // Exclude NULL courses
             $this->db->where('s.college IS NOT NULL'); // Exclude NULL colleges
+            $this->db->where('s.status', 1);
+            $this->db->where('date >=', $startDate);
+            $this->db->where('date <=', $endDate);
             $this->db->group_by(['s.course', 's.college']);
+
             
             $query = $this->db->get();
 
             $result = $query->result_array();
             foreach ($result as &$row) {
                 $row['category'] = $category;
+                $row['dateFrom'] = $startDate;
+                $row['dateTo'] = $endDate;
             }
             return $result;
         }else{
@@ -331,7 +376,89 @@ class Excel extends CI_Model
                     'data' => 'No Data.',
                     'college' => null,
                     'course' => null,
-                    'count' => null
+                    'count' => null,
+                    'dateFrom' => $startDate,
+                    'dateTo' => $endDate
+                ]
+            ];
+        }
+    }
+
+    public function get_count_per_non_active($category,  $startDate, $endDate) {
+        $this->db->from('attend');
+        $this->db->where('attend.category', strtolower($category));
+        $this->db->where('date >=', $startDate);
+        $this->db->where('date <=', $endDate);
+
+        if ($category === "Student"){
+            //ensure that only one records get counted
+            // $this->db->select('student.college, COUNT(DISTINCT attend.srcode, attend.date) as count');
+            $this->db->select('student.college, COUNT(student.srcode) as count');
+            $this->db->join('student', 'student.srcode = attend.srcode', 'left');
+            $this->db->where('student.status', 0);
+            $this->db->group_by('student.college');
+        }else if ($category === "Faculty"){
+            //ensure that only one records get counted
+            // $this->db->select('faculty.course, COUNT(DISTINCT attend.srcode, attend.date) as count');
+            $this->db->select('faculty.course, COUNT(faculty.srcode) as count');
+            $this->db->join('faculty', 'faculty.srcode = attend.srcode', 'left');
+            $this->db->where('faculty.status', 0);
+            $this->db->group_by('faculty.course');
+        }else{
+            return [
+                '0' => [
+                    'data' => 'No Data.',
+                    'college' => null,
+                    'course' => null,
+                    'count' => null,
+                    'dateFrom' => $startDate,
+                    'dateTo' => $endDate
+                ]
+            ];
+        }
+        $query = $this->db->get();
+
+        $result = $query->result_array();
+        foreach ($result as &$row) {
+            $row['category'] = $category;
+            $row['dateFrom'] = $startDate;
+            $row['dateTo'] = $endDate;
+        }
+        return $result;
+    }
+
+    public function get_non_active_student_count_per_course_and_college($category, $startDate, $endDate) { 
+        if ($category === 'Student'){
+            // $this->db->select('s.course, s.college, COUNT(DISTINCT a.srcode, a.date) as count');
+            // $this->db->from('attend a');
+            $this->db->select('s.course, s.college, COUNT(*) as count');
+            $this->db->from('attend a');
+            $this->db->join('student s', 'a.srcode = s.srcode', 'left');
+            $this->db->where('s.course IS NOT NULL');  // Exclude NULL courses
+            $this->db->where('s.college IS NOT NULL'); // Exclude NULL colleges
+            $this->db->where('s.status', 0);
+            $this->db->where('date >=', $startDate);
+            $this->db->where('date <=', $endDate);
+            $this->db->group_by(['s.course', 's.college']);
+            
+            $query = $this->db->get();
+
+            $result = $query->result_array();
+            foreach ($result as &$row) {
+                $row['category'] = $category;
+                $row['dateFrom'] = $startDate;
+                $row['dateTo'] = $endDate;
+            }
+            return $result;
+        }else{
+            return [
+                '0' => [
+                    'data' => 'No Data.',
+                    'college' => null,
+                    'course' => null,
+                    'count' => null,
+                    'dateFrom' => $startDate,
+                    'dateTo' => $endDate
                 ]
             ];
         }

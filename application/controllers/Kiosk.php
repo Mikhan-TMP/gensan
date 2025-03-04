@@ -148,12 +148,12 @@ class Kiosk extends CI_Controller
               $this->db->update('slot', $data);
               
               // Generate the time slots
-                    $counter = 0; // Initialize counter
-                    for ($time = $open_time; $time <= $close_time; $time = strtotime('+1 hour', $time)) {
-                      $times[$counter] = date('H:i', $time);
-                      // echo $times[$counter];
-                      $counter++;
-                    }
+                // $counter = 0; // Initialize counter
+                // for ($time = $open_time; $time <= $close_time; $time = strtotime('+1 hour', $time)) {
+                //   $times[$counter] = date('H:i', $time);
+                //   // echo $times[$counter];
+                //   $counter++;
+                // }
             }     
           }
           else {

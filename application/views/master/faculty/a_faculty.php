@@ -56,9 +56,9 @@
                       </div>
                       <div class="col-lg-6">
                         <div class="form-group">
-                          <label for="course" class="text-dark" style="font-weight: bold;">Department</label>
-                          <input type="text" maxlength="30" class="form-control col-lg" name="course" id="course" required
-                          style="border-radius:15px; font-size: 1rem; padding: 25px;" placeholder="Enter Department">                            
+                          <label for="course" class="text-dark" style="font-weight: bold;">College</label>
+                          <input type="text" maxlength="30" class="form-control col-lg" name="course" id="course" 
+                          style="border-radius:15px; font-size: 1rem; padding: 25px;" placeholder="Enter College">                            
                         </div>
                       </div>
                     </div>
@@ -82,7 +82,7 @@
                         <div class="form-group">
                           <!-- rfid -->
                           <label for="rfid" class="text-dark" style="font-weight: bold;">RFID</label>
-                          <input type="text" minlength="4" maxlength="30" class="form-control col-lg" name="rfid" id="rfid" required
+                          <input type="text" minlength="4" maxlength="30" class="form-control col-lg" name="rfid" id="rfid" 
                           style="border-radius:15px; font-size: 1rem; padding: 25px;" placeholder="Enter RFID">
                           <?= form_error('rfid', '<small class="text-danger">', '</small>') ?>
                         </div>
@@ -94,28 +94,42 @@
                         <div class="form-group">
                           <!-- QR -->
                           <label for="qrcode" class="text-dark" style="font-weight: bold;">QR Code</label>
-                          <input type="text" maxlength="30" minlength="4" class="form-control col-lg" name="qrcode" id="qrcode" required
+                          <input type="text" maxlength="30" minlength="4" class="form-control col-lg" name="qrcode" id="qrcode" 
                           style="border-radius:15px; font-size: 1rem; padding: 25px;" placeholder="Enter QR Code">
                           <?= form_error('qrcode', '<small class="text-danger">', '</small>') ?>
                         </div>
                       </div>
-                      <div class="col-lg-6">
-                        <div class="form-group ">
-                            <label for="e_gender" class="text-dark" style="font-weight: bold;">Gender</label>
-                            <br>
-                            <div class="form-check form-check-inline my-0">
-                              <input class="form-check-input" type="radio" name="e_gender" id="m" value="M" checked>
-                              <label class="form-check-label" for="m">
-                                Male
-                              </label>
-                              <?= form_error('e_gender', '<small class="text-danger">', '</small>') ?>
-                            </div>
-                            <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="radio" name="e_gender" id="f" value="F">
-                              <label class="form-check-label" for="f">
-                                Female
-                              </label>
-                            </div>
+                      <div class="col-lg-6" style="display: flex; flex-direction: row; justify-content: space-between;">
+                        <div>
+                        </div>
+                        <!-- Gender -->
+                        <div class="form-group mt-4 d-flex flex-column">
+                          <label for="e_gender" class="text-dark font-weight-bold">Gender</label>
+                          <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="e_gender" id="m" value="M" checked>
+                            <label class="form-check-label" for="m">Male</label>
+                          </div>
+                          <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="e_gender" id="f" value="F">
+                            <label class="form-check-label" for="f">Female</label>
+                          </div>
+                          <?= form_error('e_gender', '<small class="text-danger">', '</small>') ?>
+                        </div>
+
+                        <!-- Status -->
+                        <div class="form-group mt-4 d-flex flex-column">
+                          <label for="status" class="text-dark font-weight-bold">Status</label>
+                          <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="status" id="active" value="1" checked>
+                            <label class="form-check-label" for="active">Active</label>
+                          </div>
+                          <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="status" id="inactive" value="0">
+                            <label class="form-check-label" for="inactive">Inactive</label>
+                          </div>
+                          <?= form_error('status', '<small class="text-danger">', '</small>') ?>
+                        </div>
+                        <div>
                         </div>
                       </div>
                     </div>

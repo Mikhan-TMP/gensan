@@ -121,6 +121,31 @@
 }
 
 </style>
+<style>
+  .eyeBtn {
+    width: 35px;
+    height: 35px;
+    border-radius: 10px;
+    background-color: rgb(50, 50, 50);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+  }
+  .eyeBtn:hover {
+    background-color: rgb(80, 80, 80);
+  }
+  .eye-icon {
+    height: 20px;
+    fill: white;
+    transition: all 0.3s;
+  }
+  .eyeBtn:hover .eye-icon {
+    transform: scale(1.1);
+  }
+</style>
 <!-- Begin Page Content -->
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
         
@@ -150,6 +175,12 @@
                           <i class="fas fa-file-import"></i>
                           </span>
                           <span class="text">Excel Import</span>
+                    </button>
+                    <button id="ImportDatabase" type="button" class="btn btn-secondary btn-icon-split mb-4 shadow-sm">
+                      <span class="icon text-white-600">
+                        <i class="fas fa-database"></i>
+                      </span>
+                      <span class="text">Import Data</span>
                     </button>
                   </div>
                 </div>
@@ -257,7 +288,7 @@
           <!-- Data Table Faculty-->
           <div class="card shadow mb-4 m-auto" style="border-radius: 15px;">
             <div class="card-header py-3 d-flex" style="justify-content: space-between; border-top-left-radius: 15px; border-top-right-radius: 15px; background: linear-gradient(180deg, #BE110E, #630908);">  
-              <h6 class="m-0 text-light" style="font-size:1.5rem; font-family: 'Inter', sans-serif;">DataTables Faculty</h6>
+              <h6 class="m-0 text-light" style="font-size:1.5rem; font-family: 'Inter', sans-serif;">Faculty Table</h6>
             </div>
             <div class="card-body">
               <div class="table-responsive">
@@ -265,13 +296,15 @@
                   <thead style="color: #272727; font-weight: 500;">
                     <tr>
                       <th>#</th>
-                      <th>ID Number</th>
-                      <th>NAME</th>
-                      <th>GENDER</th>
-                      <th>DEPARTMENT</th>
+                      <th>Faculty ID</th>
+                      <th>Name</th>
+                      <th>College</th>
                       <!-- <th>PIN</th> -->
                       <th>RFID</th>
-                      <th>QRCODE</th>
+                      <th>QR</th>
+                      <th>Gender</th>
+                      <th>Status</th>
+
                       
                       
                       <!-- th>IMAGE</th>
@@ -291,19 +324,30 @@
                         <!-- td class=" align-middle"><?= $emp['id']; ?></td -->
                         <td class=" align-middle"><?= $emp['srcode']; ?></td>
                         <td class=" align-middle"><?= $emp['last_name'].", ".$emp['first_name']." ".$emp['middle_name']; ?></td>
-                        <td class=" align-middle"><?php if ($emp['gender'] == 'M') {
-                                                    echo 'Male';
-                                                  } else {
-                                                    echo 'Female';
-                                                  }; ?></td>
                         <!-- <td class=" align-middle"><?= $emp['college']; ?></td> -->
                         <td class=" align-middle"><?= $emp['course']; ?></td>
-                        <td class=" align-middle"><?= $emp['rfid']; ?></td>
-                        <td class=" align-middle"><?= $emp['qrcode']; ?></td>
+                        <td class=" align-middle"><span class="asterisk" data-value="<?= $emp['rfid']; ?>"><?= $emp['qrcode'] ? '********' : '-'; ?></span></td>
+                        <td class=" align-middle"><span class="asterisk" data-value="<?= $emp['qrcode']; ?>"><?= $emp['rfid'] ? '********' : '-'; ?></span></td>
+                        <td class="align-middle">
+                          <?= $emp['gender'] === 'M' ? '<i class="fas fa-male text-danger" style="cursor: pointer;"> Male</i>' : ($emp['gender'] === 'F' ? '<i class="fas fa-female text-success" style="cursor: pointer;"> Female</i>' : '<i class="fas fa-genderless text-secondary" style="cursor: pointer;"> N/A</i>') ?>
+                        </td>
+                        <td class=" align-middle">
+                          <?php if ($emp['status'] == '1') {
+                            echo '<span class="badge badge-success" style="padding: 10px; width:70px; cursor: pointer">Active</span>';
+                          } else {
+                            echo '<span class="badge badge-danger" style="padding: 10px; width:70px; cursor: pointer">Inactive</span>';
+                          } ?>
+                        </td>
                         <!-- td class="text-center"><img src="<?= base_url('images/pp/') . $emp['image']; ?>" style="width: 55px; height:55px" class="img-rounded"></td>
                         <td class=" align-middle"><?= $emp['building']; ?></td -->
                         <!-- <td class=" align-middle"><?= $emp['pin']; ?></td> -->
                         <td class="text-center align-middle" style="display: flex; align-items: center; gap: 10px">
+                          <!-- Reveal -->
+                          <button class="eyeBtn" onclick="toggleVisibility(this)" <?php if (empty($emp['rfid']) && empty($emp['qrcode'])) : ?> disabled <?php endif; ?>>
+                            <svg class="eye-icon" viewBox="0 0 24 24">
+                              <path fill="white" d="M12 4.5C7.5 4.5 3.73 7.61 2 12c1.73 4.39 5.5 7.5 10 7.5s8.27-3.11 10-7.5c-1.73-4.39-5.5-7.5-10-7.5zm0 12c-2.5 0-4.5-2-4.5-4.5S9.5 7.5 12 7.5 16.5 9.5 16.5 12 14.5 16.5 12 16.5zm0-7.5c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"></path>
+                            </svg>
+                          </button>
                           <a class="editBtn" href="<?= base_url('master/e_faculty/') . $emp['id'] ?>" style="text-decoration: none" tooltip="Edit">
                             <!-- edit -->
                             <svg height="1em" viewBox="0 0 512 512">
@@ -357,30 +401,53 @@
           if ($this->session->flashdata('faculty_fail')) {
            echo getAlertMessages('error', $this->session->flashdata('faculty_fail'));
           }
+          if ($this->session->flashdata('faculty_neutral')) {
+            echo getAlertMessages('neutral', $this->session->flashdata('faculty_neutral'));
+          }
+
           
           //unset it after use
           $this->session->unset_userdata('faculty_scs');
           $this->session->unset_userdata('faculty_fail');
+          $this->session->unset_userdata('faculty_neutral');
         ?> 
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-function confirmDelete(id) {
-    Swal.fire({
-        title: 'Are you sure?',
-        text: "Deleted faculty will be lost forever. Do you still want to delete?",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            window.location.href = "<?= base_url('master/d_faculty/') ?>" + id;
-        }
-    })
-}
+  function toggleVisibility(btn) {
+    // Get the parent row of the clicked button
+    const row = btn.closest("tr");
+
+    // Find the QR and RFID elements within the same row
+    const spans = row.querySelectorAll(".asterisk");
+
+    spans.forEach(span => {
+      if (span.textContent === "********") {
+        span.textContent = span.getAttribute("data-value");
+      } else {
+        span.textContent = "********";
+      }
+    });
+  }
+</script>
+
+<script>
+  function confirmDelete(id) {
+      Swal.fire({
+          title: 'Are you sure?',
+          text: "Deleted faculty will be lost forever. Do you still want to delete?",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+          if (result.isConfirmed) {
+              window.location.href = "<?= base_url('master/d_faculty/') ?>" + id;
+          }
+      })
+  }
 </script>
 
 <script>
@@ -417,4 +484,37 @@ $('#import_form').on('submit', function(event){
 });
 
 });
+</script>
+
+<script>
+    $(document).ready(function() {
+        $('#ImportDatabase').on('click', function() {
+            Swal.fire({
+                title: 'Import Database',
+                text: 'Are you sure you want to import faculty data from the Enrollment System?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, import it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    //go to master controller.
+                    window.location.href = "<?= base_url('master/import_database_faculty') ?>";
+                    Swal.fire({
+                        title: 'Import Started!',
+                        text: 'The database import process has begun.',
+                        icon: 'success',
+                        showCancelButton: false,
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        onBeforeOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                }
+            });
+        });
+    });
 </script>

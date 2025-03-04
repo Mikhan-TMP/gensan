@@ -29,8 +29,8 @@
                     <div class="row">
                       <div class="col-lg-6">
                         <div class="form-group">
-                          <label for="Student_id" class="text-dark" style="font-weight: bold;">ID</label>
-                          <input type="text" readonly class="form-control-plaintext" name="e_id" value="<?= $student['id']; ?>">
+                          <!-- <label for="Student_id" class="text-dark" style="font-weight: bold;">ID</label> -->
+                          <input type="text" hidden readonly class="form-control-plaintext" name="e_id" value="<?= $student['id']; ?>">
                         </div>
                       </div>
                     </div>
@@ -155,24 +155,39 @@
                             <label for="e_gender" class="text-dark" style="font-weight: bold;">Gender</label>
                             <div class="row col-lg">
                               <div class="form-check form-check-inline my-0">
-                                <input class="form-check-input" type="radio" name="e_gender" id="m" value="M" <?php if ($student['gender'] == 'M') {
-                                                                                                                echo 'checked';
-                                                                                                              }; ?>>
+                                <input class="form-check-input" type="radio" name="e_gender" id="m" value="M" <?php if ($student['gender'] == 'M') {echo 'checked';}; ?>>
                                 <label class="form-check-label" for="m">
                                   Male
                                 </label>
                                 <?= form_error('e_gender', '<small class="text-danger">', '</small>') ?>
                               </div>
                               <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="e_gender" id="f" value="F" <?php if ($student['gender'] == 'F') {
-                                                                                                                echo 'checked';
-                                                                                                              }; ?>>
+                                <input class="form-check-input" type="radio" name="e_gender" id="f" value="F" <?php if ($student['gender'] == 'F') {echo 'checked';}; ?>>
                                 <label class="form-check-label" for="f">
                                   Female
                                 </label>
                               </div>
                             </div>
                             <?= form_error('e_gender', '<small class="text-danger">', '</small>') ?>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-lg-6">
+                        <div class="col-lg-6">
+                          <div class="form-group">
+                            <label for="e_gender" class="text-dark" style="font-weight: bold;">Status</label>
+                            <div class="row col-lg">
+                              <div class="form-check form-check-inline my-0">
+                                <input class="form-check-input" type="radio" name="status" id="active" value="1" <?php if ($student['status'] == '1') {echo 'checked';}; ?>>
+                                <label class="form-check-label" for="active">Active</label>
+                                <?= form_error('e_gender', '<small class="text-danger">', '</small>') ?>
+                              </div>
+                              <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="status" id="inactive" value="0" <?php if ($student['status'] == '0') {echo 'checked';}; ?>>
+                                <label class="form-check-label" for="inactive">Inactve</label>
+                              </div>
+                            </div>
+                            <?= form_error('status', '<small class="text-danger">', '</small>') ?>
                           </div>
                         </div>
                       </div>

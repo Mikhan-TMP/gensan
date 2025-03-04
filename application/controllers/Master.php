@@ -409,16 +409,16 @@ public function area()
   {
 
     $this->form_validation->set_rules('f_name', 'first name', 'required|trim|regex_match[/^[a-zA-Z ]+$/]');
-    $this->form_validation->set_rules('m_name', 'middle name', 'required|trim|alpha');
+    // $this->form_validation->set_rules('m_name', 'middle name', 'required|trim|alpha');
     $this->form_validation->set_rules('l_name', 'last name', 'required|trim|regex_match[/^[a-zA-Z ]+$/]');
     $this->form_validation->set_rules('srcode', 'Student ID ', 'required|trim|is_unique[student.srcode] ', [
       'is_unique' => 'This Student ID already exists. Please try again.'
     ]);
-    $this->form_validation->set_rules('rfid', 'RF id', 'required|trim');
-    $this->form_validation->set_rules('qrcode', 'QR code', 'required|trim');
-    $this->form_validation->set_rules('year', 'Year', 'required|trim');
-    $this->form_validation->set_rules('course', 'course', 'required|trim');
-    $this->form_validation->set_rules('college', 'college', 'required|trim');
+    // $this->form_validation->set_rules('rfid', 'RF id', 'required|trim');
+    // $this->form_validation->set_rules('qrcode', 'QR code', 'required|trim');
+    // $this->form_validation->set_rules('year', 'Year', 'required|trim');
+    // $this->form_validation->set_rules('course', 'course', 'required|trim');
+    // $this->form_validation->set_rules('college', 'college', 'required|trim');
 
     if ($this->form_validation->run() == false) {
       $error = validation_errors();
@@ -441,7 +441,8 @@ public function area()
         // 'pin' => $this->input->post('pin'), 
         'schoolyear' => $this->input->post('year'),
         'course' => $this->input->post('course'),
-        'college' => $this->input->post('college')
+        'college' => $this->input->post('college'),
+        'status' => $this->input->post('status')
         // 'password' => $this->input->post('srcode') . $this->input->post('l_name')
       ];
       print_r($data);
@@ -463,15 +464,15 @@ public function area()
   public function edit_student()
   {
     $this->form_validation->set_rules('f_name', 'first name', 'required|trim|regex_match[/^[a-zA-Z ]+$/]');
-    $this->form_validation->set_rules('m_name','middle name', 'required|trim|regex_match[/^[a-zA-Z ]+$/]');
+    // $this->form_validation->set_rules('m_name','middle name', 'required|trim|regex_match[/^[a-zA-Z ]+$/]');
     $this->form_validation->set_rules('l_name', 'last name', 'required|trim|regex_match[/^[a-zA-Z ]+$/]');
     $this->form_validation->set_rules('srcode', 'sr code ', 'required|trim');
-    $this->form_validation->set_rules('qrcode', 'QR code', 'required|trim');
+    // $this->form_validation->set_rules('qrcode', 'QR code', 'required|trim');
     // $this->form_validation->set_rules('email', 'Email', 'required|trim|valid_email');
-    $this->form_validation->set_rules('rfid', 'RF id', 'required|trim');
-    $this->form_validation->set_rules('year', 'Year', 'required|trim');
-    $this->form_validation->set_rules('course', 'course', 'required|trim');
-    $this->form_validation->set_rules('college', 'college', 'required|trim');
+    // $this->form_validation->set_rules('rfid', 'RF id', 'required|trim');
+    // $this->form_validation->set_rules('year', 'Year', 'required|trim');
+    // $this->form_validation->set_rules('course', 'course', 'required|trim');
+    // $this->form_validation->set_rules('college', 'college', 'required|trim');
 
     if ($this->form_validation->run() == false) {
       $errors = validation_errors();
@@ -495,7 +496,8 @@ public function area()
             // 'pin' => $this->input->post('pin'),
             'schoolyear' => $this->input->post('year'),
             'course' => $this->input->post('course'),
-            'college' => $this->input->post('college')
+            'college' => $this->input->post('college'),
+            'status' => $this->input->post('status')
         ];
     
         $this->db->update('student', $data, ['id' => $e_id]);
@@ -1154,14 +1156,14 @@ public function users()
   {
     
     $this->form_validation->set_rules('f_name', 'first name', 'required|trim|regex_match[/^[a-zA-Z ]+$/]');
-    $this->form_validation->set_rules('m_name','middle name', 'required|trim|regex_match[/^[a-zA-Z ]+$/]');
+    // $this->form_validation->set_rules('m_name','middle name', 'required|trim|regex_match[/^[a-zA-Z ]+$/]');
     $this->form_validation->set_rules('l_name', 'last name', 'required|trim|regex_match[/^[a-zA-Z ]+$/]');
     // Faculty ID not sure yet if this should accept letters and special chars
     $this->form_validation->set_rules('srcode', 'Faculty ID ', 'required|trim|is_unique[faculty.srcode]');
-    $this->form_validation->set_rules('rfid', 'RF id', 'required|trim|numeric');
-    $this->form_validation->set_rules('qrcode', 'QR code', 'required|trim|numeric');
-    $this->form_validation->set_rules('course', 'course', 'required|trim');
-    $this->form_validation->set_rules('e_gender', 'gender', 'required|trim');
+    // $this->form_validation->set_rules('rfid', 'RF id', 'required|trim|numeric');
+    // $this->form_validation->set_rules('qrcode', 'QR code', 'required|trim|numeric');
+    // $this->form_validation->set_rules('course', 'course', 'required|trim');
+    // $this->form_validation->set_rules('e_gender', 'gender', 'required|trim');
 
     if ($this->form_validation->run() == false) {
         $errors = validation_errors();
@@ -1182,7 +1184,8 @@ public function users()
         'qrcode' => $this->input->post('qrcode'),
         'rfid' => $this->input->post('rfid'),
         // 'pin' => $this->input->post('pin'),
-        'course' => $this->input->post('course')
+        'course' => $this->input->post('course'),
+        'status' => $this->input->post('status')
       ];
       
       $this->db->insert('faculty', $data);
@@ -1215,13 +1218,13 @@ public function users()
   public function edit_faculty()
   {
     $this->form_validation->set_rules('f_name', 'first name', 'required|trim|regex_match[/^[a-zA-Z ]+$/]');
-    $this->form_validation->set_rules('m_name','middle name', 'required|trim|regex_match[/^[a-zA-Z ]+$/]');
+    // $this->form_validation->set_rules('m_name','middle name', 'required|trim|regex_match[/^[a-zA-Z ]+$/]');
     $this->form_validation->set_rules('l_name', 'last name', 'required|trim|regex_match[/^[a-zA-Z ]+$/]');
     $this->form_validation->set_rules('srcode', 'sr code ', 'required|trim');
-    $this->form_validation->set_rules('rfid', 'RF id', 'required|trim');
-    $this->form_validation->set_rules('qrcode', 'QR code', 'required|trim');
-    $this->form_validation->set_rules('college', 'college', 'required|trim');
-    $this->form_validation->set_rules('e_gender', 'gender', 'required|trim');
+    // $this->form_validation->set_rules('rfid', 'RF id', 'required|trim');
+    // $this->form_validation->set_rules('qrcode', 'QR code', 'required|trim');
+    // $this->form_validation->set_rules('college', 'college', 'required|trim');
+    // $this->form_validation->set_rules('e_gender', 'gender', 'required|trim');
     
 
     if ($this->form_validation->run() == false) {
@@ -1245,17 +1248,20 @@ public function users()
         'qrcode' => $this->input->post('qrcode'),
         'rfid' => $this->input->post('rfid'),
         // 'pin' => $this->input->post('pin'),
-        'course' => $this->input->post('college')
+        'course' => $this->input->post('college'),
+        'status' => $this->input->post('status')
       ];
   
       $this->db->update('faculty', $data, ['id' => $e_id]);
-
       $rows = $this->db->affected_rows();
+
       if ($rows > 0) {
-        $this->session->set_flashdata('faculty_scs', "Successfully updated a faculty!");
-      }
-      else if ($rows == 0) {
-        $this->session->set_flashdata('faculty_fail', "No changes were made to a faculty!");
+        $this->session->set_flashdata('faculty_scs', 'Faculty has been Updated Successfully!');
+      } elseif ($rows === 0) {
+        //no changes
+        $this->session->set_flashdata('faculty_neutral', 'No changes has been made.');
+      } else {
+        $this->session->set_flashdata('faculty_fail', 'Failed to Update Faculty. Please try again.');
       }
       redirect('master/faculty');
     }
@@ -2000,7 +2006,7 @@ public function HttpGetNotifications(){
             'out_status' => 'cancelled', 
             // 'reason' => $reason,
             'in_time' => $start_time_format, 
-            'out_time' => $end_time_format]);
+            'out_time' => $start_time_format]);
           $this->session->set_flashdata('success', 'Booking Succesfully Cancelled.');
           redirect('report/attend_seat');
         }
@@ -2084,7 +2090,7 @@ public function HttpGetNotifications(){
                       'out_status' => 'cancelled',
                       // 'reason' => $reason,
                       'in_time' => $start_time_format,
-                      'out_time' => $end_time_format]);
+                      'out_time' => $start_time_format]);
                     $this->session->set_flashdata('success', 'Booking Successfully Cancelled.');
                     redirect('report/attend_seat');
                 }
@@ -2183,7 +2189,7 @@ public function HttpGetNotifications(){
                         // 'in_status' => 'occupied',
                         // 'out_status' => 'exit',
                         'in_time' => $start_time_format, 
-                        'out_time' => $end_time_format]);
+                        'out_time' => $start_time_format]);
                       $this->session->set_flashdata('success', 'Booking Successfully Cancelled.');
                       redirect('report/attend_seat');
                   }
@@ -2203,7 +2209,7 @@ public function HttpGetNotifications(){
               // 'reason' => $reason,
 
               'in_time' => $start_time_format, 
-              'out_time' => $end_time_format]);
+              'out_time' => $start_time_format]);
             $this->session->set_flashdata('success', 'Booking Succesfully Cancelled.');
             redirect('report/attend_seat');
           }
@@ -2389,12 +2395,29 @@ public function HttpGetNotifications(){
 
   public function fetch_attendance()
 {
-    $this->load->model('Public_model'); // Load your model
-    $attendance = $this->Public_model->get_attend(); // Fetch data from model
+    $this->load->model('Public_model'); 
+    $attendance = $this->Public_model->get_attend(); 
 
     echo json_encode($attendance);
 }
 
+  public function fetch_reservations(){
+    $this->load->model('Public_model');
+    $booking = $this->Public_model->get_book_all();
+
+    echo json_encode($booking);
+  }
+
+public function print_students() {
+  //use the student model
+  $this->load->model('Student_model');
+  $students = $this->Student_model->get_students_print();
+
+  //Pass the students and load the view with it
+  $data['students'] = $students;
+  $this->load->view('report/print_students', $data);
+
+}
 
   public function excel_export() {
     $d['title'] = 'Attendance';
@@ -2406,10 +2429,11 @@ public function HttpGetNotifications(){
     $college = $this->input->get('college');
     $countOnly = $this->input->get('countOnly');
     $category = $this->input->get('category');
+    // echo $category;
 
     if (!$startDate || !$endDate || !$course || !$college ) {
       $this->session->set_flashdata('error', 'Missing required parameters.');
-      // redirect('attendance');
+      redirect('attendance');
     }
 
     $this->load->model('Excel');
@@ -2435,21 +2459,44 @@ public function HttpGetNotifications(){
       $frequent_weekly_users = $this->Excel->get_frequent_weekly_users($category);
       $frequent_monthly_users = $this->Excel->get_frequent_users_for_this_month($category);
       $frequent_yearly_users = $this->Excel->get_frequent_users_for_this_year($category);
-      $student_count_per_course_and_college = $this->Excel->student_count_per_course_and_college($category);
-      $get_count_per_college = $this->Excel->get_count_per_college($category);
+      $student_count_per_course_and_college = $this->Excel->student_count_per_course_and_college($category, $startDate, $endDate);
+      $get_count_per_college = $this->Excel->get_count_per_college($category, $startDate, $endDate);
+      $get_count_per_non_active = $this->Excel->get_count_per_non_active($category, $startDate, $endDate);
+      $get_non_active_student_count_per_course_and_college = $this->Excel->get_non_active_student_count_per_course_and_college($category, $startDate, $endDate);
       // echo'<pre>';
-      // // print_r($frequent_users);
-      // // print_r($frequent_daily_users);
-      // // print_r($frequent_weekly_users);
-      // // print_r($frequent_monthly_users);
-      // // print_r($frequent_yearly_users);
+      // echo "Frequent Users : ";
+      // print_r($frequent_users);
+      // echo'<pre>';
+      // echo "Frequent Users Daily: ";
+      // echo'<pre>';
+      // print_r($frequent_daily_users);
+      // echo'<pre>';
+      // echo "Frequent Users WEEKLY: ";
+      // echo'<pre>';
+      // print_r($frequent_weekly_users);
+      // echo'<pre>';
+      // echo "Frequent Users MONTHLY: ";
+
+      // echo'<pre>';
+      // print_r($frequent_monthly_users);
+      // echo'<pre>';
+      // echo "Frequent users YEARLY: ";
+      // echo'<pre>';
+      // print_r($frequent_yearly_users);
       // echo "counts per college: ";
-      // print_r($get_count_per_college);
-      // echo "<br>counts per college and course: ";
-      // print_r($student_count_per_course_and_college);
-
-
       // echo'<pre>';
+      // print_r($get_count_per_college);
+      // echo'<pre>';
+      // echo "<br>counts per college and course: ";
+      // echo'<pre>';
+      // print_r($student_count_per_course_and_college);
+      // echo'<pre>';
+      // echo "counts per non active: ";
+      // echo'<pre>';
+      // print_r($get_non_active_student_count_per_course_and_college);
+      // echo'<pre>';
+
+
     if ($excel_data) {
         $this->session->set_flashdata('success', 'Data successfully extracted. Wait for a moment to download the excel.');
         $this->session->set_userdata('excel_data', $excel_data);
@@ -2460,9 +2507,8 @@ public function HttpGetNotifications(){
         $this->session->set_userdata('frequent_yearly_users', $frequent_yearly_users);
         $this->session->set_userdata('student_count_per_course_and_college', $student_count_per_course_and_college);
         $this->session->set_userdata('get_count_per_college', $get_count_per_college);
-
-        
-
+        $this->session->set_userdata('get_count_per_non_active', $get_count_per_non_active);
+        $this->session->set_userdata('get_non_active_student_count_per_course_and_college', $get_non_active_student_count_per_course_and_college);
         redirect('attendance');
     } else {
         $this->session->set_flashdata('error', 'No data found for the given parameters.');
@@ -2478,6 +2524,9 @@ public function HttpGetNotifications(){
     $this->session->unset_userdata('frequent_weekly_users');
     $this->session->unset_userdata('frequent_monthly_users');
     $this->session->unset_userdata('frequent_yearly_users');
+    $this->session->unset_userdata('student_count_per_course_and_college');
+    $this->session->unset_userdata('get_count_per_college');
+    $this->session->unset_userdata('get_count_per_non_active');
     echo json_encode(['status' => 'success']);
 }
 
@@ -2621,21 +2670,44 @@ public function HttpGetNotifications(){
                 $this->db->where('date', $current_date);
                 $this->db->update('slot', ['status' => $slot_status]);
               }
-              else if ($current_time > $start_time){
-                $slot_status = $slots_data['status'];
-                $slot_status = substr($slot_status, 1, -1);
-                $slot_status = explode(',', $slot_status);
-                foreach ($slot_status as &$status) {
-                  $status = 0;
-                }
-                //make it back to string and add [] in the beginning and the end
-                $slot_status = '['. implode(',', $slot_status). ']';
-                //save it in the slot table with the slotsdata
-                $this->db->where('Floor', $area_floor);
-                $this->db->where('Room', $area_name);
-                $this->db->where('Slot', $seat_slot);
-                $this->db->where('date', $current_date);
-                $this->db->update('slot', ['status' => $slot_status]);
+              // else if ($current_time > $start_time){
+              //   $slot_status = $slots_data['status'];
+              //   $slot_status = substr($slot_status, 1, -1);
+              //   $slot_status = explode(',', $slot_status);
+              //   foreach ($slot_status as &$status) {
+              //     $status = 0;
+              //   }
+              //   //make it back to string and add [] in the beginning and the end
+              //   $slot_status = '['. implode(',', $slot_status). ']';
+              //   //save it in the slot table with the slotsdata
+              //   $this->db->where('Floor', $area_floor);
+              //   $this->db->where('Room', $area_name);
+              //   $this->db->where('Slot', $seat_slot);
+              //   $this->db->where('date', $current_date);
+              //   $this->db->update('slot', ['status' => $slot_status]);
+              // }
+                else if ($current_time > $start_time && $current_time < $end_time) {
+                  // This ensures we only reset future bookings, not past ones
+                  $slot_status = $slots_data['status'];
+                  $slot_status = substr($slot_status, 1, -1);
+                  $slot_status = explode(',', $slot_status);
+                  
+                  // Reset only slots within the time range
+                  foreach ($slot_status as $key => $value) {
+                      if ($key >= $start_index && $key <= $endtime_index) {
+                          $slot_status[$key] = 0;
+                      }
+                  }
+                  
+                  // Convert back to string format with []
+                  $slot_status = '['. implode(',', $slot_status). ']';
+                  
+                  // Update the slot table
+                  $this->db->where('Floor', $area_floor);
+                  $this->db->where('Room', $area_name);
+                  $this->db->where('Slot', $seat_slot);
+                  $this->db->where('date', $current_date);
+                  $this->db->update('slot', ['status' => $slot_status]);
               }
               else if ($current_time > $end_time){
                 //still today pero lagpas na sa reservation time.
@@ -3036,7 +3108,7 @@ public function HttpGetNotifications(){
               'out_time' => date('H:i:s')]);
           }
           echo "success";
-        $dataRangeSpecific = true;
+        $dateRangeSpecific = true;
         }
       }
     $this->load->model('Notif_model');
@@ -3057,7 +3129,7 @@ public function HttpGetNotifications(){
       ];
     }
 
-    if ($todaySpecific == true || $tmrSpecific == true || $dataRangeSpecific == true){
+    if ($todaySpecific == true || $tmrSpecific == true || $dateRangeSpecific == true){
       $data = [
         'area' => $notif_data['room'],
         'date' => $notif_data['date'],
@@ -3131,22 +3203,14 @@ public function HttpGetNotifications(){
         // $this->db->or_where('rfid', $student['rfid']);
         $existing_student = $this->db->get('student')->row_array();
 
-        // $data = [
-        //   'first_name' => $student['first_name'],
-        //   'middle_name' => $student['middle_name'],
-        //   'last_name' => $student['last_name'],
-        //   'srcode' => $student['id_number'],
-        //   // 'college' => $student['department'],
-        //   'college' => $student['college'],
-        //   'rfid' => $student['rfid']
-        // ];
         $data = array_filter([
           'first_name' => $student['first_name'] ?? null,
           'middle_name' => $student['middle_name'] ?? null,
           'last_name' => $student['last_name'] ?? null,
           'srcode' => $student['id_number'] ?? null,
           'college' => $student['college'] ?? null,
-          'rfid' => $student['rfid'] ?? null
+          'rfid' => $student['rfid'] ?? null,
+          'status' => $student['status'] ?? null
         ]);
 
         //IF THE STUDENT IS EXISTING, UPDATE
@@ -3186,6 +3250,108 @@ public function HttpGetNotifications(){
       );
       redirect('master/student');
     }
+
+    public function import_database_faculty(){
+      // API endpoint
+      $url = $this->config->item('api_endpoint_faculty');
+      $token = $this->HttpGetTokenFromGensan();
+          if (!$token) {
+              $response = [
+                  'status' => 401,
+                  'message' => 'Unauthorized: Failed to get token.'
+              ];
+            $this->session->set_flashdata('faculty_fail', $response['message']);
+            redirect('master/faculty');
+          }
+  
+      // Initialize cURL
+      $ch = curl_init($url);
+      curl_setopt_array($ch, [
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_HTTPHEADER => [
+              'Authorization: Bearer ' . $token,
+              'Content-Type: application/json'
+          ]
+      ]);
+      
+      $response = curl_exec($ch);
+      $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE); // Get the HTTP response code
+      if (curl_errno($ch)) {
+        $error = curl_error($ch);
+        curl_close($ch);
+        $this->session->set_flashdata('faculty_fail', $error);
+        redirect('master/faculty');
+      }
+      curl_close($ch);
+  
+      $data = json_decode($response, true);
+  
+      if ( !$data) {
+        $this->session->set_flashdata('faculty_fail', 'Failed to fetch data from the API.');
+        redirect('master/faculty');
+      }
+
+      $facultyCounter = 0;
+      $addCounter = 0;
+      $editCounter = 0;
+      $failedAddCounter = 0;
+      $failedEditCounter = 0;
+      $neutralEditCounter = 0;
+      foreach ($data['data']['rows'] as $faculty) {
+          $facultyCounter++;
+          // Check if srcode or rfid already exists
+          $this->db->where('srcode', $faculty['id_number']);
+          // $this->db->or_where('rfid', $faculty['rfid']);
+          $existing_faculty = $this->db->get('faculty')->row_array();
+  
+          $data = array_filter([
+            'first_name' => $faculty['first_name'] ?? null,
+            'middle_name' => $faculty['middle_name'] ?? null,
+            'last_name' => $faculty['last_name'] ?? null,
+            'srcode' => $faculty['id_number'] ?? null,
+            'course' => $faculty['college'] ?? null,
+            'college' => $faculty['department'] ?? null,
+            'rfid' => $faculty['rfid'] ?? null,
+            'status' => $faculty['employment_status'] ?? null
+          ]);
+  
+          //IF THE faculty IS EXISTING, UPDATE
+          if ($existing_faculty) {
+            $this->db->where('srcode', $faculty['id_number']);
+            $this->db->update('faculty', $data);
+            if ($this->db->affected_rows() > 0) {
+              $editCounter++;
+            } elseif ($this->db->affected_rows() === 0) {
+              $neutralEditCounter++;
+            } else {
+              $failedEditCounter++;
+            }
+            continue;
+          }
+          // IF THE faculty IS NEW, ADD
+          if (!$this->db->insert('faculty', $data)) {
+            $failedAddCounter++;
+            // $this->session->set_flashdata('faculty_fail', 'Error inserting faculty to the database.');
+            continue;
+          }else{
+            $addCounter++;
+          }
+        }
+  
+        // $this->session->set_flashdata('faculty_scs', 'facultys succesfully imported from the Enrollment System\'s database.');
+        $this->session->set_flashdata('faculty_neutral', 
+            "<i class='fas fa-check-circle text-success'></i> Succesfully imported $facultyCounter faculty records." . PHP_EOL .
+            "---------------------------------" . PHP_EOL .
+            "<i class='fas fa-plus-circle text-primary'></i> Added $addCounter new faculty records." . PHP_EOL .
+            "---------------------------------" . PHP_EOL .
+            "<i class='fas fa-edit text-warning'></i> Updated $editCounter existing faculty records." . PHP_EOL .
+            "---------------------------------" . PHP_EOL .
+            "<i class='fas fa-times-circle text-danger'></i> $failedAddCounter faculty records failed to be added." . PHP_EOL .
+            "---------------------------------" . PHP_EOL .
+            "<i class='fas fa-times-circle text-danger'></i> $failedEditCounter faculty records failed to be updated."
+        );
+        redirect('master/faculty');
+      }
 
     public function HttpGetTokenFromGensan(){
       $authURL = $this->config->item('auth_url');

@@ -6,21 +6,14 @@ class Admin_model extends CI_Model
   public function getAdmin($username)
   {
     $account = $this->db->get_where('users', ['username' => $username])->row_array();
-    /*
-    $e_id = $account['employee_id'];
-    $query = "SELECT  employee.id AS `id`,
-                      employee.name AS `name`,
-                      employee.gender AS `gender`,   
-                      employee.shift_id AS `shift`,
-                      employee.image AS `image`,
-                      employee.birth_date AS `birth_date`,
-                      employee.hire_date AS `hire_date`
-                FROM  employee
-               WHERE `employee`.`id` = '$e_id'";
-    */
     $query = "SELECT  users.id AS `id`,
                       users.username AS `name`,
-                      users.image AS `image`
+                      users.image AS `image`,
+                      users.fname AS `fname`,
+                      users.lname AS `lname`,
+                      users.email AS `email`,
+                      users.floor AS `floor`,
+                      users.permision AS `permision`
                 FROM  users
                WHERE  username = '$username'";
     return $this->db->query($query)->row_array();

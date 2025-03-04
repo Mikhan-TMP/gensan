@@ -264,17 +264,40 @@ class Public_model extends CI_Model
   public function get_attend_filter($start, $end, $dept)
   {
     if($dept == '0'){
-      $query = "SELECT  attend.qrcode, 
-          attend.RFID, 
-          attend.srcode, 
-          attend.building, 
-          attend.in_time,
-          attend.date,
-          student.first_name AS 'fname',
-          student.last_name AS 'lname'    
+      // $query = "SELECT  attend.qrcode, 
+      //     attend.RFID, 
+      //     attend.srcode, 
+      //     attend.building, 
+      //     attend.in_time,
+      //     attend.date,
+      //     student.first_name AS 'fname',
+      //     student.last_name AS 'lname'    
+      // FROM  attend
+      // INNER JOIN  student
+      // ON  attend.srcode = student.srcode
+      $query = "SELECT  attend.category, 
+      attend.username AS 'username', 
+      attend.srcode, 
+      attend.floor, 
+      attend.kiosk AS 'kiosk', 
+      attend.in_time,
+      attend.out_time,
+      attend.date,
+      student.college AS 'college',
+      student.course AS 'course',
+      student.gender AS 'gender',
+      faculty.course AS 'f_course',
+      visitor.rfid AS 'v_rfid',
+      faculty.rfid AS 'f_rfid',
+      student.rfid AS 's_rfid',
+      visitor.id AS 'visitor_id'
       FROM  attend
-      INNER JOIN  student
+      LEFT JOIN  student
       ON  attend.srcode = student.srcode
+      LEFT JOIN  faculty
+      ON  attend.srcode = faculty.srcode
+      LEFT JOIN  visitor
+      ON attend.rfid = visitor.rfid
       WHERE  (attend.date  BETWEEN '$start' AND '$end')
       ORDER BY  `date` DESC";
     }
@@ -450,10 +473,15 @@ class Public_model extends CI_Model
     $data = $this->db->get_where('users', ['username' => $username])->row_array();
     $e_id = $data['id'];
     $query = "SELECT  users.id AS `id`,
-          users.username AS `name`,
-          users.image AS `image`
-      FROM  users
-      WHERE  username = '$username'";
+                      users.username AS `name`,
+                      users.image AS `image`,
+                      users.fname AS `fname`,
+                      users.lname AS `lname`,
+                      users.email AS `email`,
+                      users.floor AS `floor`,
+                      users.permision AS `permision`
+                FROM  users
+               WHERE  username = '$username'";
     // Join Query
     /*
     $query = "SELECT  employee.id AS `id`,
@@ -541,24 +569,42 @@ class Public_model extends CI_Model
   }
   public function get_room_atd($room)
   {
-    
       $query = "SELECT  booking.code, 
-                student.first_name AS 'fname',
-                student.last_name AS 'lname' ,
-                booking.id AS 'id',    
-                booking.floor, 
-                booking.room, 
-                booking.slot_id, 
-                booking.date,
-                booking.start_time,
-                booking.end_time,
-                booking.in_status,
-                booking.out_status,
-                booking.in_time,
-                booking.out_time  
+                    -- student Info
+                    student.first_name AS 'fname',
+                    student.last_name AS 'lname', 
+                    student.srcode,
+                    student.qrcode,
+                    student.rfid,
+                    -- faculty Info
+                    faculty.first_name AS 'f_fname',
+                    faculty.last_name AS 'f_lname',
+                    faculty.srcode AS 'f_srcode',
+                    faculty.qrcode AS 'f_qrcode',
+                    faculty.rfid AS 'f_rfid',
+                    -- visitor Info
+                    visitor.name AS 'v_name',
+                    visitor.qrcode AS 'v_qrcode',
+                    visitor.rfid AS 'v_rfid',
+                    -- booking Info
+                    booking.id AS 'id',   
+                    booking.floor, 
+                    booking.room, 
+                    booking.slot_id, 
+                    booking.date,
+                    booking.in_status,
+                    booking.out_status,
+                    booking.start_time,
+                    booking.end_time,
+                    booking.in_time,
+                    booking.out_time
       FROM  booking
-      INNER JOIN  student
-      ON booking.code = student.rfid OR booking.code = student.qrcode
+      LEFT JOIN  student
+        ON  booking.code = student.rfid OR booking.code = student.qrcode
+      LEFT JOIN  faculty
+        ON  booking.code = faculty.rfid OR booking.code = faculty.qrcode
+      LEFT JOIN  visitor
+        ON booking.code = visitor.rfid
       WHERE  (booking.room ='$room')
       ORDER BY  `date` DESC ";
       
@@ -566,24 +612,42 @@ class Public_model extends CI_Model
   }
   public function get_book($start, $end)
   {
-    
       $query = "SELECT  booking.code, 
-                student.first_name AS 'fname',
-                student.last_name AS 'lname' , 
-                booking.id AS 'id',   
-                booking.floor, 
-                booking.room, 
-                booking.slot_id, 
-                booking.date,
-                booking.start_time,
-                booking.in_status,
-                booking.out_status,
-                booking.end_time,
-                booking.in_time,
-                booking.out_time  
+          -- student Info
+          student.first_name AS 'fname',
+          student.last_name AS 'lname', 
+          student.srcode,
+          student.qrcode,
+          student.rfid,
+          -- faculty Info
+          faculty.first_name AS 'f_fname',
+          faculty.last_name AS 'f_lname',
+          faculty.srcode AS 'f_srcode',
+          faculty.qrcode AS 'f_qrcode',
+          faculty.rfid AS 'f_rfid',
+          -- visitor Info
+          visitor.name AS 'v_name',
+          visitor.qrcode AS 'v_qrcode',
+          visitor.rfid AS 'v_rfid',
+          -- booking Info
+          booking.id AS 'id',   
+          booking.floor, 
+          booking.room, 
+          booking.slot_id, 
+          booking.date,
+          booking.in_status,
+          booking.out_status,
+          booking.start_time,
+          booking.end_time,
+          booking.in_time,
+          booking.out_time
       FROM  booking
-      INNER JOIN  student
-      ON booking.code = student.rfid OR booking.code = student.qrcode
+      LEFT JOIN  student
+      ON  booking.code = student.rfid OR booking.code = student.qrcode
+      LEFT JOIN  faculty
+      ON  booking.code = faculty.rfid OR booking.code = faculty.qrcode
+      LEFT JOIN  visitor
+      ON booking.code = visitor.rfid
       WHERE  (booking.date  BETWEEN '$start' AND '$end')
       ORDER BY  `date` DESC ";
       
@@ -592,25 +656,44 @@ class Public_model extends CI_Model
   public function get_room_book($start, $end, $room)
   {
     
-      $query = "SELECT  booking.code, 
-                student.first_name AS 'fname',
-                student.last_name AS 'lname' ,  
-                booking.id AS 'id',  
-                booking.floor, 
-                booking.room, 
-                booking.slot_id, 
-                booking.date,
-                booking.start_time,
-                booking.end_time,
-                booking.in_status,
-                booking.out_status,
-                booking.in_time,
-                booking.out_time  
-      FROM  booking
-      INNER JOIN  student
-      ON booking.code = student.rfid OR booking.code = student.qrcode
-      WHERE  (booking.date  BETWEEN '$start' AND '$end') AND (booking.room ='$room')
-      ORDER BY  `date` DESC ";      
+    $query = "SELECT  booking.code, 
+        -- student Info
+        student.first_name AS 'fname',
+        student.last_name AS 'lname', 
+        student.srcode,
+        student.qrcode,
+        student.rfid,
+        -- faculty Info
+        faculty.first_name AS 'f_fname',
+        faculty.last_name AS 'f_lname',
+        faculty.srcode AS 'f_srcode',
+        faculty.qrcode AS 'f_qrcode',
+        faculty.rfid AS 'f_rfid',
+        -- visitor Info
+        visitor.name AS 'v_name',
+        visitor.qrcode AS 'v_qrcode',
+        visitor.rfid AS 'v_rfid',
+        -- booking Info
+        booking.id AS 'id',   
+        booking.floor, 
+        booking.room, 
+        booking.slot_id, 
+        booking.date,
+        booking.in_status,
+        booking.out_status,
+        booking.start_time,
+        booking.end_time,
+        booking.in_time,
+        booking.out_time
+    FROM  booking
+    LEFT JOIN  student
+    ON  booking.code = student.rfid OR booking.code = student.qrcode
+    LEFT JOIN  faculty
+    ON  booking.code = faculty.rfid OR booking.code = faculty.qrcode
+    LEFT JOIN  visitor
+    ON booking.code = visitor.rfid
+    WHERE  (booking.date  BETWEEN '$start' AND '$end') AND (booking.room ='$room')
+    ORDER BY  `date` DESC ";      
     return $this->db->query($query)->result_array();
   }
   public function get_monthbook($year)
